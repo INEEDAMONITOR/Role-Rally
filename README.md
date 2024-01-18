@@ -1,11 +1,30 @@
-# CSYE7230
+## Getting Started
 
-This is the repository for NEU 2024 Spring CSYE 7230
+1. Configure environment variables in `/.env` and `/server/.env`
 
-## Install prerequisites
+    /.env
+    ```bash
+    NEXT_PUBLIC_SERVER_URL={YOUR_SERVER_URL} 
+    # NEXT_PUBLIC_SERVER_URL=http://localhost:3001
+    ```
 
-```shell
-npm i
+    /server/.env
+
+    ```bash
+    PORT={YOUR_SERVER_PORT} 
+    # PORT=3001
+    ```
+
+2. Install the project dependencies (ui & server):
+
+```bash
+pnpm predev
 ```
 
-Commit format: check [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
+3. Run the development server (ui & server):
+
+```bash
+pnpm fulldev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
