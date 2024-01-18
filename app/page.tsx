@@ -1,6 +1,11 @@
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+  // Typical RSC, which is a async component
+  const res = await (await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/test`)).json();
+
+  console.log(res);
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
