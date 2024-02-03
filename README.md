@@ -1,27 +1,15 @@
 ## Getting Started
 
-1. Configure environment variables in `/.env` and `/server/.env`
+1. [Configure](https://vault.dotenv.org/ui/ui1) environment variables for Next.js and Express.js
+   
 
-    /.env
-    ```bash
-    NEXT_PUBLIC_SERVER_URL={YOUR_SERVER_URL} 
-    # NEXT_PUBLIC_SERVER_URL=http://localhost:3001
-    ```
-
-    /server/.env
-
-    ```bash
-    PORT={YOUR_SERVER_PORT} 
-    # PORT=3001
-    ```
-
-2. Install the project dependencies (ui & server):
+2. Install the project dependencies (Next & Express):
 
 ```bash
 pnpm predev
 ```
 
-3. Run the development server (ui & server):
+3. Run the development server (Next & Express):
 
 ```bash
 pnpm fulldev
