@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@sendbird/chat':
+    specifier: ^4.10.8
+    version: 4.10.8
   next:
     specifier: 14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
@@ -287,6 +290,15 @@ packages:
   /@rushstack/eslint-patch@1.7.0:
     resolution: {integrity: sha512-Jh4t/593gxs0lJZ/z3NnasKlplXT2f+4y/LZYuaKZW5KAaiVFL/fThhs+17EbUd53jUVJ0QudYCBGbN/psvaqg==}
     dev: true
+
+  /@sendbird/chat@4.10.8:
+    resolution: {integrity: sha512-1h+qZjQnvwy+ZUYRBB6YX2nn+RUZIAYky1jC0b+VtjXn05FmNcE9f4kF7rpOn+ly62eGOSadDelfR5MJ0JBfUA==}
+    peerDependencies:
+      '@react-native-async-storage/async-storage': ^1.17.6
+    peerDependenciesMeta:
+      '@react-native-async-storage/async-storage':
+        optional: true
+    dev: false
 
   /@swc/helpers@0.5.2:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}

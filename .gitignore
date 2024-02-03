@@ -38,3 +38,8 @@ next-env.d.ts
 
 # IDE
 /.idea
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
