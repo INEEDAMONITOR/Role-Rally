@@ -1,7 +1,7 @@
 import { SENDBIRD_API_URL } from "../external/sendbird";
 
 export const handleCreateUser = async (payload: any) => {
-  const res = await fetch(`${SENDBIRD_API_URL}/users`, {
+  const res = await fetch(`${SENDBIRD_API_URL}/v3/users`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -13,7 +13,7 @@ export const handleCreateUser = async (payload: any) => {
 };
 
 export const handleFetchUser = async (userId: string) => {
-  const res = await fetch(`${SENDBIRD_API_URL}/users/${userId}`, {
+  const res = await fetch(`${SENDBIRD_API_URL}/v3/users/${userId}`, {
     headers: {
       "Api-Token": process.env.API_TOKEN as string,
     },
