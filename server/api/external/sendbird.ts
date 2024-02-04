@@ -1,0 +1,1 @@
+export const SENDBIRD_API_URL = `https://api-${process.env.APPLICATION_ID}.sendbird.com/v3`;
