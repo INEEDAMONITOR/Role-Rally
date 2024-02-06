@@ -12,6 +12,7 @@ export default async function Home() {
   const testId = "testUser";
   const userData = await (await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/fetchUser/${testId}`)).json();
   const user = await sb.connect(testId, userData.data.access_token);
+  await sb.disconnect();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
