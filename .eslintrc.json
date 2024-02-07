@@ -23,6 +23,7 @@
     "react/no-unescaped-entities": 0,
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-    "react/jsx-curly-spacing": [1, "never"]
+    "react/jsx-curly-spacing": [1, "never"],
+    "react-hooks/exhaustive-deps": "off"
   }
 }
