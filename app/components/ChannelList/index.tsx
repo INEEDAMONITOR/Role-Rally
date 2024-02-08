@@ -1,44 +1,132 @@
 import Image from "next/image";
-import { OpenChannel } from "@sendbird/chat/openChannel";
+import { GroupChannel } from "@sendbird/chat/groupChannel";
+import { useChannelListContext } from "@sendbird/uikit-react/ChannelList/context";
+import CreateChannel from "@sendbird/uikit-react/CreateChannel";
+import { useState } from "react";
+import { BaseMessage, UserMessage } from "@sendbird/chat/message";
+import { useSendbirdStateContext } from "@sendbird/uikit-react";
 
 interface Props {
-  channels: OpenChannel[];
-  currentChannel: OpenChannel | null;
+  currentChannel: GroupChannel | null;
   // eslint-disable-next-line no-unused-vars
-  onClickChannel: (channel: OpenChannel) => void;
+  onChannelSelect: (channel: GroupChannel) => void;
 }
 
-const ChannelList = ({ channels, currentChannel, onClickChannel }: Props) => {
+const ChannelListItem = (props:
+  {
+    selected: boolean;
+    coverUrl: string;
+    name: string;
+    preview: BaseMessage | null;
+    unreadMessageCount: number;
+    onClick: () => void;
+  }) => {
   return (
-    <>
-      {
-        channels.map(c => (
-          <div
-            key={c.url}
-            className={`flex space-x-6 px-3 py-6 cursor-pointer ${c.url === currentChannel?.url ? "bg-purple-500" : "hover:bg-zinc-900"} rounded-2xl mx-2`}
-            onClick={() => onClickChannel(c)}
-          >
-            <div className="self-center">
-              <Image
-                className="rounded-full"
-                src={c.coverUrl}
-                alt={c.name}
-                width={56}
-                height={56}
-              />
-            </div>
-            <div>
-              <div className="font-semibold">
-                {c.name}
-              </div>
-              <div className={`${c.url === currentChannel?.url ? "" : "text-gray-400"}`}>
-                A cool channel.
-              </div>
-            </div>
+    <div
+      className={`flex justify-between px-3 py-6 cursor-pointer ${props.selected ? "bg-purple-500" : "hover:bg-zinc-900"} rounded-2xl mx-2`}
+      onClick={props.onClick}
+    >
+      <div className="flex space-x-6 items-center">
+        <div>
+          <Image
+            className="rounded-full"
+            src={props.coverUrl}
+            alt={props.name}
+            width={56}
+            height={56}
+          />
+        </div>
+        <div>
+          <div className="font-semibold">
+            {props.name}
           </div>
-        ))
+          <div className={`${props.selected ? "" : "text-gray-400"}`}>
+            {props.preview ? (props.preview as UserMessage).message : null}
+          </div>
+        </div>
+      </div>
+      {props.unreadMessageCount > 0 && (
+        <div className="flex-shrink-0 self-center">
+          <div className="rounded-full bg-red-600 w-6 text-center">
+            {props.unreadMessageCount > 100 ? "99+" : props.unreadMessageCount}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ChannelList = ({ currentChannel, onChannelSelect }: Props) => {
+  const { initialized, allChannels } = useChannelListContext();
+  const store = useSendbirdStateContext();
+  const user = store?.stores?.userStore?.user;
+  const [isCreateChannelVisible, setCreateChannelVisible] = useState(false);
+
+  const handleChannelCreated = (c: GroupChannel) => {
+    onChannelSelect(c);
+    setCreateChannelVisible(false);
+  };
+
+  const handleCancelCreate = () => {
+    setCreateChannelVisible(false);
+  };
+
+  const handleNewClick = () => {
+    setCreateChannelVisible(true);
+  };
+
+  if (!initialized) {
+    return null;
+  }
+
+  return (
+    <div className="bg-black h-full">
+      <div className="flex justify-between p-6">
+        <h1 className="text-4xl font-semibold">
+          Chats
+        </h1>
+        {isCreateChannelVisible && (
+          <CreateChannel
+            onChannelCreated={handleChannelCreated}
+            onCancel={handleCancelCreate}
+          />
+        )}
+        <button
+          className="text-lg text-purple-400 hover:text-purple-700"
+          onClick={handleNewClick}
+        >
+          New
+        </button>
+      </div>
+      {
+        allChannels.map(c => {
+          const selected = c.url === currentChannel?.url;
+          let coverUrl = c.coverUrl;
+          let name = c.name;
+
+          if (c.memberCount === 2) {
+            const partner = c.members.find(m => m.userId !== user?.userId) ?? null;
+            if (partner) {
+              coverUrl = partner.profileUrl;
+              name = partner.nickname;
+            }
+          }
+
+
+          return (
+            <ChannelListItem
+              key={c.url}
+              selected={selected}
+              coverUrl={coverUrl}
+              name={name}
+              preview={c.lastMessage}
+              unreadMessageCount={c.unreadMessageCount}
+              onClick={() => onChannelSelect(c)}
+            />
+          );
+        })
       }
-    </>
+    </div>
   );
 };
 

@@ -3,7 +3,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode, useEffect, useState } from "react";
-import { SendBirdProvider as Sendbird } from "@sendbird/uikit-react";
+import "@sendbird/uikit-react/dist/index.css";
+import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,14 +40,14 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {accessToken && (
-          <Sendbird
+          <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
             userId={testUserId}
             accessToken={accessToken}
             theme="dark"
           >
             {children}
-          </Sendbird>
+          </SendbirdProvider>
         )}
       </body>
     </html>

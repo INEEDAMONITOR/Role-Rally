@@ -1,42 +1,26 @@
 "use client";
 
-import { useSendbirdStateContext } from "@sendbird/uikit-react";
+import { Channel, useSendbirdStateContext } from "@sendbird/uikit-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { OpenChannel as OpenChannelType } from "@sendbird/chat/openChannel";
-import { OpenChannelProvider } from "@sendbird/uikit-react/OpenChannel/context";
+import { useState } from "react";
+import { GroupChannel } from "@sendbird/chat/groupChannel";
+import { ChannelListProvider } from "@sendbird/uikit-react/ChannelList/context";
 import ChannelList from "@/app/components/ChannelList";
 
 export default function Home() {
   const store = useSendbirdStateContext();
-  const sdk = store?.stores?.sdkStore?.sdk;
   const user = store?.stores?.userStore?.user;
-  const [channels, setChannels] = useState<OpenChannelType[]>([]);
-  const [currentChannel, setCurrentChannel] = useState<OpenChannelType | null>(null);
-
-  useEffect(() => {
-    if (!sdk || !sdk.openChannel) {
-      return;
-    }
-    const openChannelListQuery = sdk.openChannel.createOpenChannelListQuery();
-    openChannelListQuery.next().then((openChannels: OpenChannelType[]) => {
-      setChannels(openChannels);
-    });
-  }, [sdk, setCurrentChannel]);
+  const [currentChannel, setCurrentChannel] = useState<GroupChannel | null>(null);
 
   return (
     <main className="flex h-screen">
-      <div className="border-e border-zinc-800 basis-1/4 flex flex-col justify-between">
-        <div className="py-6">
-          <h1 className="text-4xl font-bold pb-3 ps-3">
-            Chats
-          </h1>
+      <div className="border-e border-zinc-800 basis-1/5 flex flex-col justify-between">
+        <ChannelListProvider>
           <ChannelList
-            channels={channels}
             currentChannel={currentChannel}
-            onClickChannel={(c) => setCurrentChannel(c)}
+            onChannelSelect={(c) => setCurrentChannel(c)}
           />
-        </div>
+        </ChannelListProvider>
         <div className="flex space-x-6 p-6">
           <div className="self-center">
             <Image
@@ -57,12 +41,18 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="basis-3/4 flex flex-col">
-        {currentChannel ? (
-          <OpenChannelProvider channelUrl={currentChannel.url}>
-
-          </OpenChannelProvider>
-        ) : null}
+      <div className="basis-4/5">
+        {currentChannel?.url ?
+          <Channel
+            channelUrl={currentChannel.url}
+          />
+          : (
+            <div className="flex justify-center text-center items-center h-screen">
+              <h1 className="text-2xl text-gray-500">
+                Choose one on the left
+              </h1>
+            </div>
+          )}
       </div>
     </main>
   );

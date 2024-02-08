@@ -13,6 +13,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "*.sendbird.com",
+      },
+      {
+        protocol: "https",
         hostname: "sendbird.com",
       },
     ],
