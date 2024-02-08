@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <main className="flex h-screen">
-      <div className="bg-zinc-900 basis-1/4 flex flex-col justify-between">
+      <div className="border-e border-zinc-800 basis-1/4 flex flex-col justify-between">
         <div className="py-6">
           <h1 className="text-4xl font-bold pb-3 ps-3">
             Chats

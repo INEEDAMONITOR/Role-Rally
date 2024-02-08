@@ -15,7 +15,7 @@ const ChannelList = ({ channels, currentChannel, onClickChannel }: Props) => {
         channels.map(c => (
           <div
             key={c.url}
-            className={`flex space-x-6 px-3 py-6 cursor-pointer ${c.url === currentChannel?.url ? "bg-purple-500" : "hover:bg-gray-700"} rounded-2xl mx-2`}
+            className={`flex space-x-6 px-3 py-6 cursor-pointer ${c.url === currentChannel?.url ? "bg-purple-500" : "hover:bg-zinc-900"} rounded-2xl mx-2`}
             onClick={() => onClickChannel(c)}
           >
             <div className="self-center">
