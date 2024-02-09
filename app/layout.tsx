@@ -13,12 +13,16 @@ export default function RootLayout({
 }: {
   children: ReactNode
 }) {
-  const testUserId = "Jacob";
   const [accessToken, setAccessToken] = useState();
+  const userId = localStorage.getItem("sendbirdUserId");
+
+  if (userId == null) {
+    localStorage.setItem("sendbirdUserId", "Jacob");
+  }
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await (await fetch(`/api/user/fetchUser/${testUserId}`)).json();
+      const res = await (await fetch(`/api/user/fetchUser/${userId}`)).json();
 
       setAccessToken(res.data.access_token);
     };
@@ -42,7 +46,7 @@ export default function RootLayout({
         {accessToken && (
           <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
-            userId={testUserId}
+            userId={userId as string}
             accessToken={accessToken}
             theme="dark"
           >
