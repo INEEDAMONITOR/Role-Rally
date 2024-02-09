@@ -32,7 +32,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## UML
 
-Check UML [here](https://github.com/INEEDAMONITOR/Role-Rally/blob/2ce68a2caa797fecb11ab0cdacd4ee529704596b/UML_Diagram/README.md)
+Check UML [here](https://github.com/INEEDAMONITOR/Role-Rally/blob/UML/UML_Diagram/README.md)
 
 If you want to help refine the UML, check [Get Start doc](https://github.com/INEEDAMONITOR/Role-Rally/blob/UML/UML_Diagram/Get-Start-UML-on-GitHub.md)
-
