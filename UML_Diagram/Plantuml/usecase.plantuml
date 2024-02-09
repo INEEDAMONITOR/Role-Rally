@@ -1,0 +1,43 @@
+@startuml Rally Chat App Use Case Diagram
+
+left to right direction
+actor "Registered User" as RU
+actor "New User" as NU
+actor "User" as U
+U --|> RU
+U --|> NU
+rectangle "Rally Chat APP" {
+  RU --> (Login)
+  NU --> (Register)
+  
+  rectangle "Role Management" as RM {
+    RU --> (Manage Role)
+    (Manage Role) --> (Create Role)
+    (Manage Role) --> (Delete Role)
+    (Manage Role) --> (Update Role)
+    (Manage Role) --> (Search Other Role)
+    (Manage Role) --> (Switch Role)
+    (Manage Role) --> (Mute/Unmute Role)
+
+    (Send Friend Request) ..> (Search Other Role) : <<include>>
+  }
+
+
+  RU --> (Send Friend Request)
+
+  rectangle "Chat" as Chat {
+    (Group Chat) --> (Create Group Chat)
+    (Group Chat) --> (Join Group Chat)
+    (Group Chat) --> (Leave Group Chat)
+    (Group Chat) --> (Send Group Message)
+    (Group Chat) --> (Receive Group Message)
+
+    (Direct Chat) --> (Create Direct Chat)
+    (Direct Chat) --> (Send Direct Message)
+    (Direct Chat) --> (Receive Direct Message)
+  }
+  RU --> (Group Chat)
+  RU --> (Direct Chat)
+}
+
+@enduml

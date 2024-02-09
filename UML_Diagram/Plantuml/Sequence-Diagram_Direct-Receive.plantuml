@@ -1,0 +1,48 @@
+@startuml
+title Direct Message Receiving Process
+
+actor User
+participant "Chat App"
+participant "Msg Service"
+participant "Authentication Service" as Auth
+participant "Role Service"
+
+User -> "Chat App" : Wait for Direct Message
+"Chat App" -> User : Notification of Incoming Message
+alt User Online
+    "Chat App" -> "Msg Service" : Retrieve Message
+    alt Message Retrieval Failed
+        "Msg Service" -> "Chat App" : Display Error: Message Retrieval Failed
+        "Chat App" -> User : Display Error
+    else Message Retrieved Successfully
+        "Msg Service" -> Auth : Check if Authenticated?
+        alt Not Authenticated
+            Auth -> "Chat App" : Unauthenticated Account Access
+            "Chat App" -> User : Request User Authentication
+        else Authenticated
+            Auth -> "Role Service" : Check if Target Role is valid
+            alt Invalid Target Role
+                "Role Service" -> "Chat App" : Invalid Role Access
+                "Chat App" -> User : Display Error: Invalid Role Access
+            else Valid Target Role
+                "Role Service" -> "Chat App" : Check if Sender Role is valid
+                alt Invalid Sender Role
+                    "Chat App" -> User : Display Error: Invalid Sender Role
+                else Valid Sender Role
+                    "Role Service" -> "Chat App" : Are Sender and Target Roles Friends?
+                    alt Not Friends
+                        "Chat App" -> User : Display Error: Invalid Friend Message
+                    else Friends
+                        "Chat App" -> User : Display Message
+                        User -> "Chat App" : Acknowledge Message Receipt
+                        "Chat App" -> "Msg Service" : Confirm Message Delivery
+                    end
+                end
+            end
+        end
+    end
+else User Not Online
+    "Chat App" -> "Msg Service" : Queue Message for Later Retrieval
+end
+
+@enduml
