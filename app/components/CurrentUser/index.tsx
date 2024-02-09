@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
 import React from "react";
+import toast from "react-hot-toast";
 
 const CurrentUser = () => {
   const store = useSendbirdStateContext();
@@ -13,6 +14,7 @@ const CurrentUser = () => {
 
     localStorage.setItem("sendbirdUserId", userId === "Jacob" ? "testUser" : "Jacob");
     location.reload();
+    toast.loading("Switching user...");
   };
 
   return (

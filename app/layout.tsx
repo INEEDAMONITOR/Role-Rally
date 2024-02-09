@@ -5,6 +5,7 @@ import "./globals.css";
 import { ReactNode, useEffect, useState } from "react";
 import "@sendbird/uikit-react/dist/index.css";
 import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,15 +15,21 @@ export default function RootLayout({
   children: ReactNode
 }) {
   const [accessToken, setAccessToken] = useState();
-  const userId = localStorage.getItem("sendbirdUserId");
-
-  if (userId == null) {
-    localStorage.setItem("sendbirdUserId", "Jacob");
-  }
-
+  const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
+    const itemValue = localStorage.getItem("sendbirdUserId");
+
+    if (!localStorage.getItem("sendbirdUserId")) {
+      const j = "Jacob";
+
+      localStorage.setItem("sendbirdUserId", j);
+      setUserId(j);
+    } else {
+      setUserId(itemValue);
+    }
+
     const fetchUser = async () => {
-      const res = await (await fetch(`/api/user/fetchUser/${userId}`)).json();
+      const res = await (await fetch(`/api/user/fetchUser/${itemValue}`)).json();
 
       setAccessToken(res.data.access_token);
     };
@@ -43,7 +50,10 @@ export default function RootLayout({
         </title>
       </head>
       <body className={inter.className}>
-        {accessToken && (
+        <div>
+          <Toaster />
+        </div>
+        {accessToken && userId && (
           <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
             userId={userId as string}
