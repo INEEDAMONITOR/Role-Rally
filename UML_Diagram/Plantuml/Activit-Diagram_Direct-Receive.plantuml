@@ -1,0 +1,81 @@
+@startuml
+title Direct Message Receiving Process
+
+|User|
+|Chat App|
+|Msg Service|
+|Authentication Service|
+|Role Service|
+
+|User|
+start
+:Wait for Direct Message;
+
+|Chat App|
+:Notification of Incoming Message;
+if (User Online?) then (NO)
+  |Msg Service|
+  :Queue Message for Later Retrieval;
+  |User|
+  stop
+else (YES)
+
+    |Msg Service|
+  :Retrieve Message;
+  if (Is Message Retrieved Successful?) then (NO)
+    |Chat App|
+    :Display Error: Message Retrieval Failed;
+    |User|
+    stop
+  endif
+  
+  |Authentication Service|
+  if (Authenticated?) then (NO)
+    :Unauthenticated Account Access;
+    |Chat App|
+    :Request User Authentication;
+    |User|
+    stop
+  else (YES)
+    |Authentication Service|  
+    :Authenticated Account Access;
+  endif
+
+  |Role Service|
+  if (Is Target Role valid?) then (NO)
+    |Chat App|  
+    :Display Error: Invalid Role Access;
+    |User|
+    stop
+  else (YES)
+    |Role Service|
+    if (Is Sender Role valid?) then (NO)
+      |Chat App|
+      :Display Error: Invalid Sender Role;
+      |User|
+      stop
+    else (YES)
+      |Role Service|
+      if (Are Sender and Target Roles Friends?) then (NO)
+        |Chat App|
+        :Display Error: Invalid Friend Message;
+        |User|
+        stop
+      else (YES)
+        |Role Service|
+        :Valid Message Request;
+      endif
+    endif
+  endif
+  
+  |Chat App|
+  :Display Message;
+  :Update Chat History;
+  |User|
+  :Acknowledge Message Receipt;
+  |Msg Service|
+  :Confirm Message Delivery;
+  |User|
+  stop
+endif
+@enduml
