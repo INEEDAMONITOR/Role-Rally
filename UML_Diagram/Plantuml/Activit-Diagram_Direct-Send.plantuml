@@ -1,0 +1,85 @@
+@startuml
+title Dircet Message Sending Process
+
+|User|
+|Chat App|
+|Msg Service|
+|Authentication Service|
+|Role Service|
+
+|User|
+start
+:Message a Friend (From a source Role to a target Role);
+
+|Authentication Service|
+if (Authenticated?) then (NO)
+  :Unauthenticated Account Request;
+  |Chat App|
+  :Receive Error: Unauthenticated Account;
+  |User|
+  stop
+else (YES)
+  |Authentication Service|  
+  :Authenticated Account Request;
+endif
+
+|Role Service|
+if (Is Source Role valid?) then (NO)
+  |Chat App|  
+  :Receive Error: Invalid Source Role;
+  |User|
+  stop
+else (YES)
+  |Role Service|
+  if (Is Target Role valid?) then (NO)
+    |Chat App|
+    :Receive Error: Invalid Target Role;
+    |User|
+    stop
+  else (YES)
+    |Role Service|
+    if (Are Target and Source Roles Friends?) then (NO)
+      |Chat App|
+      :Receive Error: Invalid Friend Request;
+      |User|
+      stop
+    else (YES)
+      |Role Service|
+      :Valid Role Message Request;
+    endif
+  endif
+endif
+
+|Chat App|
+:Initiate Message Sending;
+if (Message Request Sending Successful?) then (NO)
+  |Chat App|
+  :Receive Error: Message Sending Failed;
+  |User|
+  stop
+endif
+|Msg Service|
+if (Is Message Processed Successful?) then (NO)
+  |Chat App|
+  :Receive Error: Message Processing Failed;
+  |User|
+  stop
+endif
+|Msg Service|
+fork
+  :Update Chat History;
+fork again
+  :Listen for Message Receive Confirmation;
+end fork
+|Msg Service|
+if (Is Message Received?) then (NO)
+  |Chat App|
+  : Receive Confirmation: Message Sent;
+  |User|
+  stop
+endif
+|Chat App|
+:Receive Confirmation: Message Received;
+|User|
+stop
+@enduml

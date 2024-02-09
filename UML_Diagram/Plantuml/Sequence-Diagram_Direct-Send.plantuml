@@ -1,0 +1,43 @@
+@startuml
+title Direct Message Sending Process
+
+actor User
+participant "Chat App"
+participant "Msg Service"
+participant "Authentication Service" as Auth
+participant "Role Service"
+
+User -> "Chat App" : Message a Friend(From a source Role to a target Role)
+"Chat App" -> Auth : Check if Authenticated?
+alt Unauthenticated
+    Auth -> "Chat App" : Unauthenticated Account Request
+    "Chat App" -> User : Receive Error: Unauthenticated Account
+else Authenticated
+    Auth -> "Chat App" : Authenticated Account Request
+    "Chat App" -> "Role Service" : Check if Source Role is valid
+    alt Invalid Source Role
+        "Role Service" -> "Chat App" : Invalid Source Role Request
+        "Chat App" -> User : Receive Error: Invalid Source Role
+    else Valid Source Role
+        "Role Service" -> "Chat App" : Check if Target Role is valid
+        alt Invalid Target Role
+            "Chat App" -> User : Receive Error: Invalid Target Role
+        else Valid Target Role
+            "Role Service" -> "Chat App" : Are Target and Source Roles Friends?
+            alt Not Friends
+                "Chat App" -> User : Receive Error: Invalid Friend Request
+            else Friends
+                "Chat App" -> "Msg Service" : Initiate Message Sending
+                alt Message Sending Failed
+                    "Msg Service" -> "Chat App" : Message Sending Failed
+                    "Chat App" -> User : Receive Error: Message Sending Failed
+                else Message Processed Successfully
+                    "Msg Service" -> "Chat App" : Message Processed Successfully
+                    "Chat App" -> User : Receive Confirmation: Message Sent
+                end
+            end
+        end
+    end
+end
+
+@enduml
