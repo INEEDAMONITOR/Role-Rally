@@ -9,6 +9,18 @@ const nextConfig = {
       }
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.sendbird.com",
+      },
+      {
+        protocol: "https",
+        hostname: "sendbird.com",
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
