@@ -29,7 +29,7 @@ export default function RootLayout({
     }
 
     const fetchUser = async () => {
-      const res = await (await fetch(`/api/user/fetchUser/${itemValue}`)).json();
+      const res = await (await fetch(`/api/users/${itemValue}`)).json();
 
       setAccessToken(res.data.access_token);
     };
