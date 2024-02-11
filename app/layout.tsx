@@ -17,13 +17,14 @@ export default function RootLayout({
   const [accessToken, setAccessToken] = useState();
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
-    const itemValue = localStorage.getItem("sendbirdUserId");
+    let itemValue = localStorage.getItem("sendbirdUserId");
 
     if (!localStorage.getItem("sendbirdUserId")) {
       const j = "Jacob";
 
       localStorage.setItem("sendbirdUserId", j);
       setUserId(j);
+      itemValue = j;
     } else {
       setUserId(itemValue);
     }
