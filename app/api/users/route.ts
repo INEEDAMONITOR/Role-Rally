@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   });
 
   const data = await res.json();
-
+  
   return Response.json({
     message: "User created successfully",
     data,
