@@ -22,6 +22,16 @@ pnpm dev
 
 4. Open [localhost:3000](http://localhost:3000/)
 
+If you add new env variable
+
+```bash
+$ npx dotenv-vault@latest push
+```
+
+> - Push before you commit.
+> - The client side env variables need have `NEXT_PUBLIC_` prefix.
+
+
 ## UML
 
 Check UML [here](https://github.com/INEEDAMONITOR/Role-Rally/blob/UML/UML_Diagram/README.md)
