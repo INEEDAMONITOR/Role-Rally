@@ -129,3 +129,5 @@ const ChannelList = ({ currentChannel, onChannelSelect }: Props) => {
     </div>
   );
 };
+
+export default ChannelList;
