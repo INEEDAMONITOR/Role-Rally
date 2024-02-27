@@ -1,15 +1,11 @@
 "use client";
 
-import { request } from "http";
 import { useEffect, useState } from "react";
-import { AnyObject, Document, DocumentSetOptions, Error, FlattenMaps, MergeType, Model, PopulateOptions, Query, QueryOptions, Require_id, SaveOptions, ToObjectOptions, Types, UpdateQuery, UpdateWithAggregationPipeline, pathsToSkip } from "mongoose";
+import { Types } from "mongoose";
 import { UserCard } from "@/app/components/testComponents/UserCard";
 import { Role, User } from "../types";
-import { IUser } from "../api/models/User";
-import { ClientSession } from "mongodb";
-import { IProfile } from "../api/models/Profile";
-import { IRole } from "../api/models/Role";
-import { ro } from "date-fns/locale";
+import { IUser } from "../api/_models/User";
+import { IRole } from "../api/_models/Role";
 import { CreateUserForm } from "../components/testComponents/CreateUserForm";
 
 export const createUser = async (user: { name: string, email: string }) => {
@@ -27,6 +23,7 @@ const getUsers = async () => {
     method: "GET"
   });
   let users = await response.json() as User[];
+  console.log(users);
   users = await Promise.all(users.map((user) => enhanceUser(user))) as User[];
   return users as User[];
 };
@@ -88,11 +85,13 @@ const Test = () => {
     <div className="flex flex-col items-center justify-center p-4 gap-10">
       {
         users?.map((user) => {
-          return <div key={user._id}>
-            <UserCard
-              user={user}
-            />
-          </div>;
+          return (
+            <div key={user._id.toString()}>
+              <UserCard
+                user={user}
+              />
+            </div>
+          );
         })
       }
       <CreateUserForm />

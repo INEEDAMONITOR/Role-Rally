@@ -1,5 +1,5 @@
 "use strict";
-import { IProfile } from "@/app/api/models/Profile";
+import { IProfile } from "@/app/api/_models/Profile";
 import { User } from "@/app/types";
 // Create a user card component
 export function UserCard({ user }: { user: User }) {
@@ -14,7 +14,7 @@ export function UserCard({ user }: { user: User }) {
         </p>
         <p className="text-gray-800 text-sm">
           ID:
-          {user._id}
+          {user._id.toString()}
         </p>
         <div className="mt-4">
           <span className="text-lg font-semibold block mb-2">

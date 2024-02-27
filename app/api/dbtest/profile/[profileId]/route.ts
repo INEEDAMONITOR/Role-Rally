@@ -1,6 +1,6 @@
-import { dbConnect } from "@/app/api/utils";
+import { dbConnect } from "@/app/api/_utils";
 import { NextResponse } from "next/server";
-import Profile from "@/app/api/models/Profile";
+import Profile from "@/app/api/_models/Profile";
 interface Params {
     profileId: string;
 }

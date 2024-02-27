@@ -2,9 +2,8 @@ import { dbConnect, validateEmail } from "@/app/api/_utils";
 import { Types } from "mongoose";
 import UserModel from "@/app/api/_models/User";
 import { NextResponse } from "next/server";
-import { createUser, deleteUser } from "@/app/api/_services/user";
-import { deleteProfile } from "@/app/api/_services/profile";
-
+import { createUser } from "@/app/api/_services/user";
+import bcrypt from "bcrypt";
 /**
  * Handles the HTTP POST request for creating a new user.
  *
@@ -13,7 +12,7 @@ import { deleteProfile } from "@/app/api/_services/profile";
  * @returns A Promise that resolves to void.
  */
 export async function POST(request: Request) {
-  const { name, email } = await request.json();
+  const { name, email, password } = await request.json();
 
   // Basic validation
   if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -29,10 +28,11 @@ export async function POST(request: Request) {
 
   try {
     await dbConnect();
+    const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = await createUser({
       name,
       email,
-      password: "",
+      password: hashedPassword,
     });
     if (newUser) {
       return NextResponse.json({
@@ -52,40 +52,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-// Get 10 users
-export async function GET(request: Request) {
-  try {
-    await dbConnect();
-    const users = await UserModel.find().limit(10);
-    return NextResponse.json(users);
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(request: Request) {
-  const { userId } = await request.json();
-  try {
-    await dbConnect();
-    await deleteUser(userId as Types.ObjectId);
-    return NextResponse.json({ message: "User deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(request: Request) {
-  const { id } = await request.json();
-  deleteProfile(id);
-  return new Response(null, { status: 200 });
 }

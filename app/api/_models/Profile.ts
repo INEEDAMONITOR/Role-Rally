@@ -1,20 +1,21 @@
 import mongoose from "mongoose";
 
 interface Phone {
-  number: string;
-  type?: string;
+  number: string; // xxxx
+  type?: string; // 001
 }
+
 interface Email {
-  address: string;
-  type?: string;
+  address: string; // exmpa@com
+  type?: string; // work, personal, etc.
 }
-export interface IProfile extends mongoose.Document{
+export interface IProfile extends mongoose.Document {
   displayName: string;
   email: [Email];
   phone: [Phone];
   avatar: string;
   about: string;
-  pronouns: string
+  pronouns: string;
 }
 
 const EmailSchema = new mongoose.Schema<Email>({
@@ -36,4 +37,5 @@ export const ProfileSchema = new mongoose.Schema<IProfile>({
   pronouns: String,
 });
 
-export default mongoose.models.Profile || mongoose.model<IProfile>("Profile", ProfileSchema);
+export default mongoose.models.Profile ||
+  mongoose.model<IProfile>("Profile", ProfileSchema);

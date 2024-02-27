@@ -1,18 +1,26 @@
 import { Types } from "mongoose";
-import UserModel, { IUser } from "@/app/api/models/User";
+import UserModel, { IUser } from "@/app/api/_models/User";
 import { warn } from "console";
-import { createRole, deleteRole } from "./roleController";
-import { createProfile, deleteProfile } from "./profileController";
+import { createRole, deleteRole } from "./role";
+import { createProfile, deleteProfile } from "./profile";
 
 interface CreateUserProp {
   name: string;
   email: string;
+  password: string;
 }
+export const validateUser = async (email: string, password: string) => {
+  // TODO: Add the logic to validate the user
+  // bcrypt.compareSync(password1, password2);
+};
 
+export const getUser = async (userId: Types.ObjectId) => {
+  // TODO: Add the logic to get the user by the user id
+};
 
 export const deleteUser = async (userId: Types.ObjectId) => {
   try {
-    const user = await UserModel.findById(userId).exec() as IUser;
+    const user = (await UserModel.findById(userId).exec()) as IUser;
     if (user) {
       for (const role of user.rolesId) {
         deleteRole(role._id);
@@ -27,22 +35,23 @@ export const deleteUser = async (userId: Types.ObjectId) => {
   }
 };
 
+// Return the JSW token if success
 export const createUser = async (user: CreateUserProp) => {
   let newRole = null;
   let newProfile = null;
   try {
     newRole = await createRole();
     newProfile = await createProfile();
-    
-    const newUser = await UserModel.create(
-      {
-        name: user.name,
-        email: user.email,
-        profileId: newProfile._id,
-        profile: newProfile,
-        rolesId: [newRole._id],
-      }
-    ); 
+
+    const newUser = await UserModel.create({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      profileId: newProfile._id,
+      profile: newProfile,
+      rolesId: [newRole._id],
+    });
+    // TODO: Return the JWT token
     return newUser;
   } catch (error) {
     if (newRole) {
@@ -51,7 +60,6 @@ export const createUser = async (user: CreateUserProp) => {
     if (newProfile) {
       deleteProfile(newProfile._id);
     }
-
     warn(error);
   }
 };

@@ -1,5 +1,5 @@
-import { dbConnect } from "@/app/api/utils";
-import RoleModel, { IRole } from "@/app/api/models/Role";
+import { dbConnect } from "@/app/api/_utils";
+import RoleModel, { IRole } from "@/app/api/_models/Role";
 import { NextResponse } from "next/server";
 interface Params {
     roleId: string;
