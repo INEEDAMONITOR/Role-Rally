@@ -5,7 +5,7 @@
 1. Install packages
 
 ```bash
-npx dotenv-vault@latest pull
+pnpm install
 ```
 
 2. Pull the `.env` file
@@ -30,7 +30,6 @@ $ npx dotenv-vault@latest push
 
 > - Push before you commit.
 > - The client side env variables need have `NEXT_PUBLIC_` prefix.
-
 
 ## UML
 
