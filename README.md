@@ -1,20 +1,35 @@
 ## Getting Started
 
-1. [Configure](https://vault.dotenv.org/ui/ui1) environment variables for Next.js and Express.js
+### Env Setup
 
-2. Install the project dependencies (ui & server):
-
-```bash
-pnpm predev
-```
-
-3. Run the development server (Next & Express):
+1. Install packages
 
 ```bash
-pnpm fulldev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Pull the `.env` file
+
+```bash
+npx dotenv-vault@latest pull
+```
+
+3. Run the project
+
+```bash
+pnpm dev
+```
+
+4. Open [localhost:3000](http://localhost:3000/)
+
+If you add new env variable
+
+```bash
+$ npx dotenv-vault@latest push
+```
+
+> - Push before you commit.
+> - The client side env variables need have `NEXT_PUBLIC_` prefix.
 
 ## UML
 
