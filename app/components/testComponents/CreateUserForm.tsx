@@ -1,23 +1,25 @@
 "use strict";
 
 import { createUser } from "@/app/test/page";
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 
 export function CreateUserForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-
+  // Force refresh the page
+  // Force refresh the page
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await createUser({ name: username, email });
+    const response = await createUser({ name: username, email, password });
     if (response.error) {
       setErrorMsg(response.error);
     } else {
       setErrorMsg("");
     }
     console.log(response);
+    location.reload();
   };
 
   return (
@@ -53,6 +55,18 @@ export function CreateUserForm() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          type="input"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
         />
       </div>

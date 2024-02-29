@@ -1,12 +1,11 @@
 import { Types } from "mongoose";
 import ProfileModel from "@/app/api/_models/Profile";
 import { warn } from "console";
-import { get } from "http";
 
 export const createProfile = async () => {
   try {
     const newProfile = await ProfileModel.create({
-      displayName: "Default Role",
+      displayName: "New Role",
       email: [],
       phone: [],
       avatar: "",

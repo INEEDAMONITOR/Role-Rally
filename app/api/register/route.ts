@@ -1,6 +1,4 @@
 import { dbConnect, validateEmail } from "@/app/api/_utils";
-import { Types } from "mongoose";
-import UserModel from "@/app/api/_models/User";
 import { NextResponse } from "next/server";
 import { createUser } from "@/app/api/_services/user";
 import bcrypt from "bcrypt";

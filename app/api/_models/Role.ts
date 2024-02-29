@@ -1,10 +1,11 @@
-import { IProfile } from "./Profile";
 import mongoose, { Types } from "mongoose";
 
 export type Accessibility = "public" | "private" | "protected";
 
 export interface IRole {
+  _id: Types.ObjectId;
   profileId: Types.ObjectId;
+  ownerId: Types.ObjectId;
   accessibility: Accessibility;
   friends: Types.ObjectId[];
   chatRooms: Types.ObjectId[];
@@ -15,6 +16,10 @@ const RoleSchema = new mongoose.Schema<IRole>({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Profile",
+  },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   accessibility: {
     type: String,
