@@ -40,6 +40,7 @@ export async function POST(req: Request) {
         }
       );
     }
+    delete user.password;
 
     const token = jwt.sign(user, process.env.JWT_SECRET as string, {
       expiresIn: 60 * 60 * 24 * Number(process.env.JWT_EXPIRES_IN),
