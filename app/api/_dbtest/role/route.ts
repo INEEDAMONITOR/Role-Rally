@@ -1,5 +1,7 @@
 import UserModel from "@/app/api/_models/User";
-import { createRole } from "@/app/api/_services/role";
+import { createRole, deleteRole } from "@/app/api/_services/role";
+import { dbConnect } from "@/app/api/_utils";
+import { Types } from "mongoose";
 import { NextResponse, userAgent } from "next/server";
 interface Params {
   roleId: string;
@@ -29,3 +31,18 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export const DELETE = async (request: Request) => {
+  const { id } = await request.json();
+  try {
+    await dbConnect();
+    await deleteRole(id as Types.ObjectId);
+    return NextResponse.json({ message: "Role deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+};

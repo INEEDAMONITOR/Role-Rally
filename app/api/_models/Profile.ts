@@ -9,7 +9,8 @@ interface Email {
   address: string; // exmpa@com
   type?: string; // work, personal, etc.
 }
-export interface IProfile extends mongoose.Document {
+export interface IProfile {
+  _id: string;
   displayName: string;
   email: [Email];
   phone: [Phone];

@@ -3,6 +3,7 @@ import mongoose, { Types } from "mongoose";
 export type Accessibility = "public" | "private" | "protected";
 
 export interface IRole {
+  _id: Types.ObjectId;
   profileId: Types.ObjectId;
   ownerId: Types.ObjectId;
   accessibility: Accessibility;

@@ -76,10 +76,9 @@ export const createUser = async (user: CreateUserProp) => {
       profile: newProfile,
       rolesId: [newRole._id],
     });
-    const updatedData = RoleModel.findByIdAndUpdate(newRole._id, {
+    RoleModel.findByIdAndUpdate(newRole._id, {
       ownerId: newUser._id,
     }).exec();
-
     // TODO: Return the JWT token
     return newUser;
   } catch (error) {
