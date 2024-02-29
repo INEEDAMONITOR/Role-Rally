@@ -4,7 +4,7 @@ import { warn } from "console";
 
 export const createProfile = async () => {
   try {
-    const newProfile = await ProfileModel.create({
+    return await ProfileModel.create({
       displayName: "New Role",
       email: [],
       phone: [],
@@ -12,7 +12,6 @@ export const createProfile = async () => {
       about: "",
       pronouns: "",
     });
-    return newProfile;
   } catch (error) {
     warn(error);
   }

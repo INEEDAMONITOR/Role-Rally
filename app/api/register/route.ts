@@ -11,10 +11,16 @@ import bcrypt from "bcrypt";
  */
 export async function POST(request: Request) {
   const { name, email, password } = await request.json();
-
-  // Basic validation
+  
   if (!name || typeof name !== "string" || name.trim().length === 0) {
-    return NextResponse.json({ message: "Invalid name" }, { status: 400 });
+    return NextResponse.json(
+      {
+        message: "Invalid name"
+      },
+      {
+        status: 400
+      }
+    );
   }
 
   if (!email || typeof email !== "string" || !validateEmail(email)) {
@@ -32,21 +38,21 @@ export async function POST(request: Request) {
       email,
       password: hashedPassword,
     });
+
     if (newUser) {
       return NextResponse.json({
-        message: "Created successful",
-        payload: newUser,
+        message: "User created successfully",
+        data: newUser,
       });
     } else {
       return NextResponse.json(
-        { message: "Create fail. Email may already registered" },
+        { message: "User registration failed. The Email may be existed" },
         { status: 400 }
       );
     }
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
-      { message: "Internal server error", error: error },
+      { message: "Database connection timeout" },
       { status: 500 }
     );
   }
