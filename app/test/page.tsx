@@ -6,7 +6,7 @@ import { UserCard } from "@/app/components/testComponents/UserCard";
 import { Role, User } from "../types";
 import { IUser } from "../api/_models/User";
 import { IRole } from "../api/_models/Role";
-import { CreateUserForm } from "../components/testComponents/CreateUserForm";
+import { CreateUserForm } from "@/app/components/testComponents/CreateUserForm";
 
 export const createUser = async (user: { name: string, email: string }) => {
   const response = await fetch("http://localhost:3000/api/dbtest/user", {
