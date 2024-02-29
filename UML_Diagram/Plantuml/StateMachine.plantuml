@@ -1,0 +1,26 @@
+@startuml
+[*] --> Idle
+Idle : entry / [Initialize application & check user token]
+Idle --> RoleSelected: selectRole()
+RoleSelected: entry / [Load role data & check role access]
+RoleSelected --> ViewingProfile : viewProfile()
+ViewingProfile : entry / [Load profile data]
+ViewingProfile : exit / [Save current profile view state]
+ViewingProfile --> EditingProfile : selectEditProfile()
+EditingProfile : entry / [Prepare profile data for editing]
+EditingProfile --> ViewingProfile : viewProfile()
+ViewingProfile --> RoleSelected : exitViewingProfile() 
+
+RoleSelected --> Chatting : selectChat()
+Chatting --> RoleSelected : exitChatting()
+Chatting : entry / [Load chat history & check role access]
+Chatting : exit / [Save chat state]
+Chatting --> typingMessage : typeMessage()
+typingMessage : entry / [Encrypt message]
+typingMessage --> Chatting : sendMessage()
+
+Idle --> LoggedOut : logout()
+RoleSelected --> LoggedOut : logout()
+LoggedOut : entry / [Clear session data]
+LoggedOut --> [*]
+@enduml

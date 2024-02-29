@@ -23,3 +23,7 @@ This file is for the UML diagrams as a reference for this project.
 ![Direct Send Sequence Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/INEEDAMONITOR/Role-Rally/main/UML_Diagram/Plantuml/Sequence-Diagram_Direct-Receive.plantuml)
 
 ![Direct Send Sequence Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/INEEDAMONITOR/Role-Rally/main/UML_Diagram/Plantuml/Sequence-Diagram_Direct-Send.plantuml)
+
+## State Machine Diagram
+
+![State Machine Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/INEEDAMONITOR/Role-Rally/main/UML_Diagram/Plantuml/StateMachine.plantuml)
