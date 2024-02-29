@@ -33,6 +33,6 @@ $ npx dotenv-vault@latest push
 
 ## UML
 
-Check UML [here](https://github.com/INEEDAMONITOR/Role-Rally/blob/UML/UML_Diagram/README.md)
+Check UML [here](https://github.com/INEEDAMONITOR/Role-Rally/blob/main/UML_Diagram/README.md)
 
 If you want to help refine the UML, check [Get Start doc](https://github.com/INEEDAMONITOR/Role-Rally/blob/UML/UML_Diagram/Get-Start-UML-on-GitHub.md)
