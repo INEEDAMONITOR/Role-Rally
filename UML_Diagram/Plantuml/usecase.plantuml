@@ -15,7 +15,6 @@ rectangle "Rally Chat APP" {
     (Manage Role) --> (Create Role)
     (Manage Role) --> (Delete Role)
     (Manage Role) --> (Update Role)
-    (Manage Role) --> (Search Other Role)
     (Manage Role) --> (Switch Role)
     (Manage Role) --> (Mute/Unmute Role)
 
