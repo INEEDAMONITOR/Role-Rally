@@ -66,18 +66,15 @@ if (Is Message Processed Successful?) then (NO)
   stop
 endif
 |Msg Service|
-fork
-  :Update Chat History;
-fork again
-  :Listen for Message Receive Confirmation;
-end fork
+
+:Update Chat History;
+|Chat App|
+: Receive Confirmation: Message Sent;
+
 |Msg Service|
-if (Is Message Received?) then (NO)
-  |Chat App|
-  : Receive Confirmation: Message Sent;
-  |User|
-  stop
-endif
+repeat :Listen for message Receive Confirmation
+repeat while (Message is received by friends) is (False)
+->true;
 |Chat App|
 :Receive Confirmation: Message Received;
 |User|
