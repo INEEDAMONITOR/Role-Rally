@@ -77,7 +77,7 @@ class Chat{
   chat_type: int {read only}
   chat_status: int {read only}
   +getChatType():void;
-  +setChatType(chat_Type):void;
+  +setChatType(chat_Type):void;  
   +sendMsg();
   +receiveMsg();
 }
@@ -92,7 +92,6 @@ class GroupChat{
   +groupName: string
   +member: roleId[];
 
-  +connectSession();
   +inviteMember(roleId);
   +removeMember(roleId);
   +leaveGroup(roleId);
@@ -101,11 +100,13 @@ class GroupChat{
 
 class ChatHistory{
   sender: roleId
-  +getMsgList(): objMsg[];
-  +addMsg(objMsg[]);
+  +getMsgList(): Message[];
+  +addMsg(Message[]);
 }
 
 class Message{
+  chatType: int {read only}
+  sender: roleId {read only}
   msgType: int {read only}
   imgType: int {read only}
   videoType: int {read only}
@@ -114,15 +115,17 @@ class Message{
   +display();
 }
 
-GroupChat "1" --> "1..*" Chat
-ChatHistory "1" --> "1..*" GroupChat
-ChatHistory "1" --> "1..*" IndividualChat
-ChatHistory "1" --> "1..*" Message
-Role "1" *-- "1..*" Chat : has >
-Chat "*" <-- "*" IndividualChat
-User "1" *-- "1..*" Role : has >
-User "1" *-- "1" Profile : has >
-Role "1" *-- "1" Profile : has >
+ChatHistory "1" --* "1" GroupChat
+ChatHistory "1" --* "1" IndividualChat
+ChatHistory  -- Message
+
+Chat <|-- GroupChat
+Chat <|-- IndividualChat
+
+Role "1" -- "*" Chat
+User "1" *-- "1..*" Role : has
+User "1" *-- "1" Profile : has
+Role "1" *-- "1" Profile : has
 
 User "1" -- "1" UserSettings 
 Role "1" -- "1" RoleSetting 
