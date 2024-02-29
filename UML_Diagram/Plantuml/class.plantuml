@@ -1,0 +1,131 @@
+@startuml
+class User {
+    _id: string
+    name: string
+    email: string
+    password: string
+    profileId: string
+    rolesId: string[]
+
+    +createAccount(): void;
+    +login(email, password): void;
+    +getRoleList() : Role[];
+    +createRole() : Role;
+    +deleteRole() : void;
+    +viewSettings();
+    +getNotifications();
+    +logout();
+}
+class  UserSettings {
+  +viewProfile();
+  +privacy();
+  +changePassword();
+  +changeEmail();
+  +changeName();
+}
+
+class Role {
+    _id: string
+    profileId: string
+    ownerId: string
+    accessibility: Accessibility
+    friends: string[]
+    chatRooms: string[]
+
+    +chat();
+    +createGroupo();
+    +viewSetting();
+    +getNotifications();
+    +searchRole(roleId);
+    +addFriend(roleId);
+    +removeFriend(roleId)
+    +listFriends();
+    +blockUser(roleId): void;
+    +acceptsFriendRequest(roleId);
+    +denyFriendRequest(roleId);
+}
+
+class RoleSetting{
+  +viewProfile();
+  +changeRoleName();
+  +changeAccessbility();
+}
+
+class Profile {
+    _id: string
+    displayName: string
+    email: Email[]
+    phone: Phone[]
+    avatar: string
+    about: string
+    pronouns: string
+}
+class ProfileSetting{
+  +changeName(string);
+  +addEmail(string);
+  +removeEmail(string);
+  +updateEmail();
+  +addPhone(string);
+  +removePhone(string);
+  +updatePhone();
+  +changeAvatar(image);
+  +changeAbout(string);
+  +changePronouns(string);
+}
+
+class Chat{
+  chat_type: int {read only}
+  chat_status: int {read only}
+  +getChatType():void;
+  +setChatType(chat_Type):void;
+  +sendMsg();
+  +receiveMsg();
+}
+
+class IndividualChat{
+  +peerRoleId: string
+  +status: string
+}
+
+class GroupChat{
+  +groupId: string
+  +groupName: string
+  +member: roleId[];
+
+  +connectSession();
+  +inviteMember(roleId);
+  +removeMember(roleId);
+  +leaveGroup(roleId);
+  +deleteGroup(GroupId);
+}
+
+class ChatHistory{
+  sender: roleId
+  +getMsgList(): objMsg[];
+  +addMsg(objMsg[]);
+}
+
+class Message{
+  msgType: int {read only}
+  imgType: int {read only}
+  videoType: int {read only}
+  time: string {read only}
+  +getChatType():void;
+  +display();
+}
+
+GroupChat "1" --> "1..*" Chat
+ChatHistory "1" --> "1..*" GroupChat
+ChatHistory "1" --> "1..*" IndividualChat
+ChatHistory "1" --> "1..*" Message
+Role "1" *-- "1..*" Chat : has >
+Chat "*" <-- "*" IndividualChat
+User "1" *-- "1..*" Role : has >
+User "1" *-- "1" Profile : has >
+Role "1" *-- "1" Profile : has >
+
+User "1" -- "1" UserSettings 
+Role "1" -- "1" RoleSetting 
+Profile "1" -- "1" ProfileSetting 
+
+@enduml
