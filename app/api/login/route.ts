@@ -1,39 +1,67 @@
-import UserModel from "@/app/api/_models/User";
-import { IUser } from "@/app/api/_models/User";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/app/api/_utils";
+import { validateUser } from "@/app/api/_services/user";
 
 export async function POST(req: Request) {
-  await dbConnect();
-  const secretKey = process.env.JWT_SECRET as string;
-  const { email, password } = await req.json();
+  try {
+    const payload = await req.json();
 
-  const user: IUser | undefined = await UserModel.findOne({ email }).exec();
-  if (!user) {
+    if (payload?.email === undefined) {
+      return NextResponse.json(
+        {
+          message: "Email can not be undefined"
+        },
+        {
+          status: 401
+        }
+      );
+    }
+
+    if (payload?.password === undefined) {
+      return NextResponse.json(
+        {
+          message: "Password can not be undefined"
+        },
+        {
+          status: 401
+        }
+      );
+    }
+
+    const user = await validateUser(payload.email, payload.password);
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: "Email or password is incorrect"
+        },
+        {
+          status: 401
+        }
+      );
+    }
+    delete user.password;
+
+    const token = jwt.sign(user, process.env.JWT_SECRET as string, {
+      expiresIn: 60 * 60 * 24 * Number(process.env.JWT_EXPIRES_IN),
+    });
+
     return NextResponse.json(
-      { message: "Authentication failed" },
-      { status: 401 }
-    );
-  }
-  const isPasswordValid = bcrypt.compareSync(password, user.password);
-  if (!isPasswordValid) {
-    return NextResponse.json(
-      { message: "Authentication failed" },
-      { status: 401 }
-    );
-  }
-  const token = jwt.sign({ userId: user._id }, secretKey, {
-    expiresIn: "1h",
-  });
-  return NextResponse.json(
-    {
-      message: "Login successes",
-      payload: {
+      {
         token,
       },
-    },
-    { status: 200 }
-  );
+      {
+        status: 200
+      }
+    );
+  } catch (e) {
+    return NextResponse.json(
+      {
+        message: "Payload body is undefined"
+      },
+      {
+        status: 401
+      }
+    );
+  }
 }

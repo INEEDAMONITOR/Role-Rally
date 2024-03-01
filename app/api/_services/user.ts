@@ -6,6 +6,7 @@ import { generateFindOneQuery } from "@/app/api/_services/utils";
 import { createRole, deleteRole } from "@/app/api/_services/role";
 import { createProfile, deleteProfile } from "@/app/api/_services/profile";
 import RoleModel from "@/app/api/_models/Role";
+import { sendbirdRequests } from "@/app/_lib/sendbird";
 
 interface CreateUserProp {
   name: string;
@@ -25,11 +26,17 @@ interface UserProps extends Omit<IUser, "_id" | "profileId" | "rolesId"> {
  * @returns A boolean indicating whether the user is valid or not.
  */
 export const validateUser = async (email: string, password: string) => {
-  const user = await getUser({ email }, ["email", "password"]);
-  if (!user) {
-    return false;
+  try {
+    const user = await getUser({ email }, ["email", "password"]);
+
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return false;
+    }
+
+    return await user.toObject();
+  } catch (e) {
+    return null;
   }
-  return bcrypt.compareSync(password, user.password);
 };
 
 type UserQueryProps = Partial<UserProps> | string | Types.ObjectId;
@@ -60,7 +67,6 @@ export const deleteUser = async (userId: Types.ObjectId) => {
   }
 };
 
-// Return the JSW token if success
 export const createUser = async (user: CreateUserProp) => {
   let newRole = null;
   let newProfile = null;
@@ -76,10 +82,17 @@ export const createUser = async (user: CreateUserProp) => {
       profile: newProfile,
       rolesId: [newRole._id],
     });
-    RoleModel.findByIdAndUpdate(newRole._id, {
+
+    await RoleModel.findByIdAndUpdate(newRole._id, {
       ownerId: newUser._id,
     }).exec();
-    // TODO: Return the JWT token
+
+    await sendbirdRequests.createUser({
+      user_id: newRole._id,
+      nickname: newProfile.displayName,
+      profile_url: "https://sendbird.com/main/img/profiles/profile_05_512px.png",
+      issue_access_token: true,
+    });
     return newUser;
   } catch (error) {
     if (newRole) {

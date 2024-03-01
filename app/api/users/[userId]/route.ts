@@ -1,19 +1,24 @@
-import { SENDBIRD_API_URL } from "@/app/_lib/sendbird";
+import { sendbirdRequests } from "@/app/_lib/sendbird";
+import { NextRequest, NextResponse } from "next/server";
+import { userAuthenticate } from "@/app/api/_middleware/user";
 
 interface Params {
     userId: string;
 }
 
-export async function GET(_: Request, { params }: { params: Params }) {
-  const res = await fetch(`${SENDBIRD_API_URL}/v3/users/${params.userId}`, {
-    headers: {
-      "Api-Token": process.env.API_TOKEN as string,
-    },
-  });
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const user = await userAuthenticate(req);
 
-  const data = await res.json();
+  if (!user) {
+    return NextResponse.json(
+      {
+        message: "Auth failed",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
 
-  return Response.json({
-    data,
-  });
+  return await sendbirdRequests.fetchUser(params.userId);
 }
