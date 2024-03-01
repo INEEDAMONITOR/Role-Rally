@@ -2,15 +2,14 @@ import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 import { getUser } from "@/app/api/_services/user";
 
-export const userAuthenticate = async (req: NextRequest) => {
+export const userAuthenticate = async (request: NextRequest) => {
   try {
-    const authorizationHeader = req.headers.get("Authorization");
+    const token = request.cookies.get("roleRallyUserToken")?.value;
 
-    if (authorizationHeader === null) {
+    if (!token) {
       return null;
     }
 
-    const token = authorizationHeader.replace("Bearer ", "");
     const jwtPayload = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (typeof jwtPayload === "string") {
