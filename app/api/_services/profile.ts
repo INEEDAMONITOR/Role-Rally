@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
-import ProfileModel from "@/app/api/_models/Profile";
+import ProfileModel, { IProfile } from "@/app/api/_models/Profile";
 import { warn } from "console";
+import { generateFindOneQuery } from "@/app/api/_services/utils";
 
 export const createProfile = async () => {
   try {
@@ -16,7 +17,14 @@ export const createProfile = async () => {
     warn(error);
   }
 };
-export const getProfile = async (profileId: Types.ObjectId) => {};
+export interface ProfileProps extends Omit<IProfile, "_id"> {
+  _id: string | Types.ObjectId;
+}
+type ProfileQueryProps = Partial<ProfileProps> | string | Types.ObjectId;
+export const getProfile = generateFindOneQuery<
+  typeof ProfileModel,
+  ProfileQueryProps
+>(ProfileModel);
 
 export const deleteProfile = async (profileId: Types.ObjectId) => {
   ProfileModel.findByIdAndDelete(profileId).exec();
