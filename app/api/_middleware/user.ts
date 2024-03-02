@@ -23,7 +23,32 @@ export const userAuthenticate = async (request: NextRequest) => {
   }
 };
 
-export const userAuthenticateWithId: CustomMiddleware<{
+export const validateTokenMiddleware: CustomMiddleware = async (
+  request,
+  _,
+  next
+) => {
+  try {
+    const token = request.cookies.get("roleRallyUserToken")?.value;
+    if (!token) {
+      return NextResponse.json(
+        { message: "No token provided" },
+        { status: 401 }
+      );
+    }
+
+    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET as string);
+    if (typeof jwtPayload === "string") {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
+
+    next?.();
+  } catch (e) {
+    return NextResponse.json({ message: "Internal error" }, { status: 500 });
+  }
+};
+
+export const userAuthenticateWithIdMiddleware: CustomMiddleware<{
   params: { id: string };
 }> = async (request, { params }, next) => {
   try {
@@ -44,7 +69,6 @@ export const userAuthenticateWithId: CustomMiddleware<{
     if (jwtPayload._id !== params.id) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    console.log(jwtPayload);
 
     if (next != undefined) {
       next();
