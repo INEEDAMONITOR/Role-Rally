@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = [
-  "/chats"
-];
+const PROTECTED_ROUTES = ["/chats", "/role-demo"];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("roleRallyUserToken")?.value;
@@ -21,7 +19,9 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     } else {
-      const user = await (await fetch(`${request.nextUrl.origin}/api/users/testUser`)).json();
+      const user = await (
+        await fetch(`${request.nextUrl.origin}/api/users/testUser`)
+      ).json();
       if (!user.data) {
         request.cookies.delete("roleRallyUserToken");
       }
