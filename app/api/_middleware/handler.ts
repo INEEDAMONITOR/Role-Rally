@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export type NextFunction = () => Promise<void>;
-export type CustomMiddleware<Params = unknown> = (
+
+export type CustomMiddleware<Params = {}> = (
   request: NextRequest,
   params: Params,
-  next?: NextFunction,
+  next?: NextFunction
 ) => Promise<NextResponse | void>;
 
-export const handler = <Params>(...middlewares: CustomMiddleware<Params>[]) => 
+export const handler =
+  <Params>(...middlewares: CustomMiddleware<Params>[]) =>
   async (request: NextRequest, params: Params) => {
     let result;
     for (const middleware of middlewares) {
