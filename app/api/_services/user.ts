@@ -87,12 +87,12 @@ export const createUser = async (user: CreateUserProp) => {
       ownerId: newUser._id,
     }).exec();
 
-    await sendbirdRequests.createUser({
-      user_id: newRole._id,
-      nickname: newProfile.displayName,
-      profile_url: "https://sendbird.com/main/img/profiles/profile_05_512px.png",
-      issue_access_token: true,
-    });
+    // await sendbirdRequests.createUser({
+    //   user_id: newRole._id,
+    //   nickname: newProfile.displayName,
+    //   profile_url: "https://sendbird.com/main/img/profiles/profile_05_512px.png",
+    //   issue_access_token: true,
+    // });
     return newUser;
   } catch (error) {
     if (newRole) {
