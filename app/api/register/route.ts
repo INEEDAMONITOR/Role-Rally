@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
 export async function POST(request: Request) {
   const { name, email, password } = await request.json();
 
-  if (!name || typeof name !== "string") {
+  if (!name || typeof name !== "string" || name.trim().length === 0) {
     return NextResponse.json(
       {
         message: "Invalid name"
