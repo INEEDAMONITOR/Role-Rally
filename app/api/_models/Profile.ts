@@ -36,7 +36,6 @@ export const ProfileSchema = new mongoose.Schema<IProfile>({
   phone: { type: [PhoneSchema], required: true },
   ownerRoleId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
   },
   avatar: String,
   about: String,
