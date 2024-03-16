@@ -119,7 +119,7 @@ export default function Login() {
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?
           <a
-            href="#"
+            href="/signup"
             className="ps-1.5 font-semibold leading-6 text-indigo-500 hover:text-indigo-300 ms-2"
             onClick={handleCreateAccount}
           >
