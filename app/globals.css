@@ -10,4 +10,6 @@
 body {
   color: var(--text-color);
   background: var(--background-color);
+  height: 100%;
+  overflow: hidden;
 }
