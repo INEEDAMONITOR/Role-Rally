@@ -1,0 +1,139 @@
+@startuml
+class ReactComponent {
+    -render(): any
+}
+
+class MainApp {
+    -sendbird: Token {id};
+    +Chat();
+    +ChatHistory();
+    +GroupChat();
+    +IndividualChat();
+    +NotificationsAndAlerts();
+    +Message();
+}
+
+class API {
+    +forwardRequest(token: Token, request: Request): Response;
+}
+
+class Database {
+    +findUser(username: String): User;
+    +createUser(accountDetails: MainAccount): User;
+    +updateUserRole(user: User, role: Role): Boolean;
+    +manageRoleData(roleAction: RoleAction): RoleActionResult;
+}
+
+class AuthenticationService {
+    +authenticate(credentials: Credentials): Boolean;
+    +generateToken(user: User): Token;
+    +validateToken(token: Token): Boolean;
+}
+
+class Server {
+    +handleLogin(credentials: Credentials)
+    +handleRegistration(accountDetails: MainAccount);;
+    +manageRoles(action: RoleAction): RoleActionResult;
+}
+
+class LoginAPI {
+    +login(credentials: Credentials): Token {id};
+    +register(accountDetails: MainAccount): User;
+}
+
+class LogoutAPI {
+    +logout(token: Token): Boolean;
+}
+
+class AccountRegistration {
+    +registerMain(): MainAccount;
+}
+
+
+class MainAccount {
+    +createRole(credentials: Credentials): Role;
+    +deleteRole(Role role);
+    +switchRole(Role roleA, Role roleB);
+    +setRole(Role role);
+    +createProfile();
+    +logout();
+}
+
+class Role {
+    _id: string
+    profileId: string
+    ownerId: string
+    accessibility: Accessibility
+    friends: string[]
+    chatRooms: string[]
+
+    +chat();
+    +createGroupo();
+    +viewSetting();
+    +getNotifications();
+    +searchRole(roleId);
+    +addFriend(roleId);
+    +removeFriend(roleId)
+    +listFriends();
+    +blockUser(roleId): void;
+    +acceptsFriendRequest(roleId);
+    +denyFriendRequest(roleId);
+}
+
+class RoleSetting{
+  +viewProfile();
+  +changeRoleName();
+  +changeAccessbility();
+}
+
+class Profile {
+    _id: string
+    displayName: string
+    email: Email[]
+    phone: Phone[]
+    avatar: string
+    about: string
+    pronouns: string
+}
+
+class ProfileSetting{
+  +changeName(string);
+  +addEmail(string);
+  +removeEmail(string);
+  +updateEmail();
+  +addPhone(string);
+  +removePhone(string);
+  +updatePhone();
+  +changeAvatar(image);
+  +changeAbout(string);
+  +changePronouns(string);
+}
+
+ReactComponent <|-- MainApp
+ReactComponent <|-- LoginAPI
+ReactComponent <|-- AccountRegistration
+ReactComponent <|-- MainAccount
+ReactComponent <|-- Role
+ReactComponent <|-- Profile
+
+MainApp "1" *-- "*" Role : has
+Role "1" *-- "1" Profile : has
+Role "1" -- "1" RoleSetting : has
+Profile "1" -- "1" ProfileSetting
+
+LoginAPI --> AuthenticationService : "authentication"
+LoginAPI --> AccountRegistration : "Registration"
+AuthenticationService --> Server : "authentication"
+Server --> Database : "Queries"
+AccountRegistration --> Server : "Update_data"
+AccountRegistration "1" ..> "*" MainAccount : "create"
+MainApp --> API : "Sends_sendbird_token"
+API -- Server : "Validates_token"
+API --> Database : "Forwards_data"
+MainAccount --> LogoutAPI : "logout"
+LogoutAPI --> AuthenticationService : "token_invalidation"
+
+MainAccount "1" ..> "*" Role : creates
+MainAccount "1" ..> "1" Profile : creates
+MainAccount "1" ..> "1" API : update
+@enduml
