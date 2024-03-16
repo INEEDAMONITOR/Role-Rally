@@ -2,9 +2,13 @@ import { Types } from "mongoose";
 import UserModel, { IUser } from "@/app/api/_models/User";
 import { warn } from "console";
 import bcrypt from "bcrypt";
-import { generateFindOneQuery } from "@/app/api/_services/utils";
+import { Selector, generateFindOneQuery } from "@/app/api/_services/utils";
 import { createRole, deleteRole } from "@/app/api/_services/role";
-import { createProfile, deleteProfile } from "@/app/api/_services/profile";
+import {
+  createProfile,
+  deleteProfile,
+  getProfile,
+} from "@/app/api/_services/profile";
 import RoleModel from "@/app/api/_models/Role";
 import { sendbirdRequests } from "@/app/_lib/sendbird";
 
@@ -39,7 +43,7 @@ export const validateUser = async (email: string, password: string) => {
   }
 };
 
-type UserQueryProps = Partial<UserProps> | string | Types.ObjectId;
+export type UserQueryProps = Partial<UserProps> | string | Types.ObjectId;
 /**
  * Retrieves a user based on the provided props and optional selector.
  * @param props - The properties used to identify the user.
@@ -49,6 +53,23 @@ type UserQueryProps = Partial<UserProps> | string | Types.ObjectId;
 export const getUser = generateFindOneQuery<typeof UserModel, UserQueryProps>(
   UserModel
 );
+
+export const getUserWithProfile = async (
+  props: UserQueryProps,
+  selector?: Selector
+) => {
+  let user = await getUser(props, selector);
+  try {
+    if (user) {
+      const profile = await getProfile(user.profileId);
+      user = { ...user.toObject(), profile };
+    }
+    return user;
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+};
 
 export const deleteUser = async (userId: Types.ObjectId) => {
   try {
@@ -90,7 +111,8 @@ export const createUser = async (user: CreateUserProp) => {
     await sendbirdRequests.createUser({
       user_id: newRole._id,
       nickname: newProfile.displayName,
-      profile_url: "https://sendbird.com/main/img/profiles/profile_05_512px.png",
+      profile_url:
+        "https://sendbird.com/main/img/profiles/profile_05_512px.png",
       issue_access_token: true,
     });
     return newUser;

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 interface Phone {
   number: string; // xxxx
@@ -11,6 +11,7 @@ interface Email {
 }
 export interface IProfile {
   _id: string;
+  ownerRoleId: Types.ObjectId;
   displayName: string;
   email: [Email];
   phone: [Phone];
@@ -33,6 +34,10 @@ export const ProfileSchema = new mongoose.Schema<IProfile>({
   displayName: { type: String, required: true },
   email: { type: [EmailSchema], required: true },
   phone: { type: [PhoneSchema], required: true },
+  ownerRoleId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   avatar: String,
   about: String,
   pronouns: String,

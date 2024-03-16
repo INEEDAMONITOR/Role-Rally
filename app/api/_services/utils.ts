@@ -1,8 +1,10 @@
 import { dbConnect } from "@/app/api/_utils";
 import { warn } from "console";
 import { Model, Types } from "mongoose";
-type Selector = string | string[] | Record<string, number | boolean | object>;
-
+export type Selector =
+  | string
+  | string[]
+  | Record<string, number | boolean | object>;
 /**
  * Generates a findOne query function for a given model.
  *

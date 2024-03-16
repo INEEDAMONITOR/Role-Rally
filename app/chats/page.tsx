@@ -13,6 +13,12 @@ export default function Chats() {
   return (
     <main className="flex h-screen">
       <div className="border-e border-zinc-800 basis-1/5 flex flex-col justify-between">
+        <a
+          href="/role-demo"
+          className="text-2xl text-center text-gray-500 p-4"
+        >
+          Go to Role Demo Page
+        </a>
         <ChannelListProvider>
           <ChannelList
             currentChannel={currentChannel}
@@ -34,6 +40,6 @@ export default function Chats() {
             </div>
           )}
       </div>
-    </main>
+    </main >
   );
 }
