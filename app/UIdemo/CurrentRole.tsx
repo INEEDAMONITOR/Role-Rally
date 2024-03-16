@@ -1,6 +1,6 @@
 import { Role, User } from "@/app/types";
 import Image from "next/image";
-import { ProfileIcon } from "./Icons/profileIcon";
+import { ProfileIcon } from "./Icons/ProfileIcon";
 import { SettingIcon } from "./Icons/SettingIcon";
 export function CurrentRole({
   role,
@@ -29,7 +29,7 @@ export function CurrentRole({
         <p className="text-sm font-medium truncate">
           {role.profile.displayName}
         </p>
-        <p className="text-xs text-green-500 truncate">在线</p>
+        <p className="text-xs text-green-500 truncate">Online</p>
       </div>
 
       <button aria-label="Profile" onClick={toggleViewProfile}>

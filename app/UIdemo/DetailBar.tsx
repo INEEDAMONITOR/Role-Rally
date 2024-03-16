@@ -1,6 +1,6 @@
 import { Role, User } from "@/app/types";
 import { CurrentRole } from "./CurrentRole";
-export function RoleDetailBar({
+export function DetailBar({
   role,
   setViewProfile,
   viewProfile,
@@ -23,4 +23,4 @@ export function RoleDetailBar({
   );
 }
 
-export default RoleDetailBar;
+export default DetailBar;

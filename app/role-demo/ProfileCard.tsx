@@ -1,16 +1,17 @@
 "user strict";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/app/role-demo/Button";
 import { Profile } from "@/app/types";
 import Image from "next/image";
 import { useState } from "react";
 import { updateProfile } from "@/app/utils/https";
+
 interface Props {
-  profile: Profile
+  profile: Profile;
 }
 
 const getBase64 = (file: File) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     let fileInfo;
     let baseURL: any = "";
     // Make new FileReader
@@ -30,13 +31,16 @@ export const ProfileCard = (props: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<Profile>(props.profile);
   const [newProfile, setNewProfile] = useState<Profile | {}>({});
+  useEffect(() => {
+    setProfile(props.profile);
+  }, [props]);
   const editHandler = async () => {
     setIsEditing(!isEditing);
   };
   const saveHandler = async () => {
     updateProfile({
       ...newProfile,
-      id: profile._id
+      id: profile._id,
     }).then((res) => {
       setProfile(res.profile);
     });
@@ -52,7 +56,7 @@ export const ProfileCard = (props: Props) => {
         setNewProfile((prev) => {
           return {
             ...prev,
-            avatar: base64
+            avatar: base64,
           };
         });
       });
@@ -61,7 +65,7 @@ export const ProfileCard = (props: Props) => {
     setNewProfile((prev) => {
       return {
         ...prev,
-        displayName: e.target.value
+        displayName: e.target.value,
       };
     });
   };
@@ -69,7 +73,7 @@ export const ProfileCard = (props: Props) => {
     setNewProfile((prev) => {
       return {
         ...prev,
-        about: e.target.value
+        about: e.target.value,
       };
     });
   };
@@ -77,19 +81,17 @@ export const ProfileCard = (props: Props) => {
     setNewProfile((prev) => {
       return {
         ...prev,
-        pronouns: e.target.value
+        pronouns: e.target.value,
       };
     });
   };
 
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-gray-400 text-black">
+    <div className="max-w-lg rounded overflow-hidden shadow-lg bg-gray-400 text-black">
       <div className="px-6 py-4">
-        <p>
-          {profile._id}
-        </p>
+        <p>{profile._id}</p>
         <div className="flex items-center space-x-2">
-          {!isEditing &&
+          {!isEditing && (
             <Image
               src={profile.avatar ? profile.avatar : "/default.jpg"}
               alt="avatar"
@@ -97,13 +99,10 @@ export const ProfileCard = (props: Props) => {
               height={50}
               className="rounded-full"
             />
-          }
-          {isEditing &&
+          )}
+          {isEditing && (
             <>
-              <span className="flex-none">
-                Avatar:
-                {" "}
-              </span>
+              <span className="flex-none">Avatar: </span>
               <input
                 type="file"
                 name="file"
@@ -111,54 +110,47 @@ export const ProfileCard = (props: Props) => {
                 onChange={changeAvatarHandler}
               />
             </>
-          }
+          )}
         </div>
         <div className="flex items-center space-x-2">
-          <span className="flex-none">
-            Name:
-            {" "}
-          </span>
+          <span className="flex-none">Name: </span>
           {!isEditing && profile.displayName}
-          {isEditing &&
+          {isEditing && (
             <input
               type="text"
               placeholder={profile.displayName}
               onChange={changeNameHandler}
               defaultValue={profile.displayName}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />}
+            />
+          )}
         </div>
 
-
         <div className="flex items-center space-x-2">
-          <span className="flex-none">
-            About:
-            {" "}
-          </span>
+          <span className="flex-none">About: </span>
           {!isEditing && profile.about}
-          {isEditing &&
+          {isEditing && (
             <input
               type="text"
               placeholder={profile.about}
               defaultValue={profile.about}
               onChange={changeAboutHandler}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />}
+            />
+          )}
         </div>
         <div className="flex items-center space-x-2">
-          <span className="flex-none">
-            Pronouns:
-            {" "}
-          </span>
+          <span className="flex-none">Pronouns: </span>
           {!isEditing && profile.pronouns}
-          {isEditing &&
+          {isEditing && (
             <input
               type="text"
               placeholder={profile.pronouns}
               defaultValue={profile.pronouns}
               onChange={changePronounsHandler}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />}
+            />
+          )}
         </div>
         <Button
           handler={editHandler}
@@ -166,11 +158,7 @@ export const ProfileCard = (props: Props) => {
         >
           {isEditing ? "Cancel" : "Edit"}
         </Button>
-        {isEditing &&
-          <Button handler={saveHandler}>
-            Save
-          </Button>
-        }
+        {isEditing && <Button handler={saveHandler}>Save</Button>}
       </div>
     </div>
   );
