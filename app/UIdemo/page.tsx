@@ -60,7 +60,7 @@ const MyPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <div className="flex-2 bg-blue-100 flex">
         {user && (
           <div className="bg-black ">
@@ -70,11 +70,10 @@ const MyPage: React.FC = () => {
                 {roles.map((role) => (
                   <li
                     key={role._id}
-                    className={`flex justify-center mb-1 p-2 ${
-                      selectedRole?._id === role._id
+                    className={`flex justify-center mb-1 p-2 ${selectedRole?._id === role._id
                         ? "bg-gray-700"
                         : "hover:bg-gray-700"
-                    }`}
+                      }`}
                   >
                     <div onClick={() => selectRoleHandler(role)}>
                       {role && <RoleIcon role={role} />}
@@ -98,7 +97,9 @@ const MyPage: React.FC = () => {
           />
         )}
 
-        <div className="flex-[4_4_0%] bg-gray-600 ">{middleComponent}</div>
+        <div className="flex-[4_4_0%] bg-gray-600 ">
+          {middleComponent}
+        </div>
       </div>
       <RightComponent />
     </div>
