@@ -1,7 +1,11 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
+import { UserProvider } from "@/app/contexts/UserContext";
+import { Role } from "@/app/types";
+import toast from "react-hot-toast";
+import RoleSelector from "@/app/components/RoleSelector";
 
 export default function ChatsLayout({
   children,
@@ -9,41 +13,55 @@ export default function ChatsLayout({
   children: ReactNode
 }) {
   const [accessToken, setAccessToken] = useState();
-  const [userId, setUserId] = useState<string | null>(null);
-  useEffect(() => {
-    let itemValue = localStorage.getItem("sendbirdUserId");
+  const [currentRole, setCurrentRole] = useState<Role | null>(null);
 
-    if (!localStorage.getItem("sendbirdUserId")) {
-      const j = "Jacob";
-
-      localStorage.setItem("sendbirdUserId", j);
-      setUserId(j);
-      itemValue = j;
-    } else {
-      setUserId(itemValue);
-    }
+  const handleSelectRole = (role: Role) => {
+    const roleId = role._id;
 
     const fetchUser = async () => {
-      const res = await (await fetch(`/api/users/${itemValue}`)).json();
+      try {
+        const res = await (await fetch(`/api/users/${roleId}`)).json();
 
-      setAccessToken(res.data.access_token);
+        if (res?.data?.error) {
+          toast.error(res?.data?.message);
+          return;
+        }
+
+        localStorage.setItem("sendbirdUserId", roleId);
+        setCurrentRole(role);
+        setAccessToken(res.data.access_token);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
-    fetchUser().catch(console.error);
-  }, []);
+    fetchUser();
+  };
 
   return (
     <>
-      {accessToken && userId && (
-        <SendbirdProvider
-          appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
-          userId={userId as string}
-          accessToken={accessToken}
-          theme="dark"
-        >
-          {children}
-        </SendbirdProvider>
-      )}
+      <UserProvider>
+        <div className="flex">
+          <div className="flex-shrink-0 border-e border-zinc-800 px-1 h-screen overflow-y-scroll no-scrollbar">
+            <RoleSelector
+              selectedRole={currentRole}
+              onSelectedRole={handleSelectRole}
+            />
+          </div>
+          <div className="flex-grow">
+            {accessToken && currentRole?._id && (
+              <SendbirdProvider
+                appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
+                userId={currentRole._id}
+                accessToken={accessToken}
+                theme="dark"
+              >
+                {children}
+              </SendbirdProvider>
+            )}
+          </div>
+        </div>
+      </UserProvider>
     </>
   );
 }
