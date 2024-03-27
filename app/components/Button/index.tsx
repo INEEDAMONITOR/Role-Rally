@@ -21,7 +21,7 @@ export default function Button(props: Props) {
   const { icon, selected, children } = props;
 
   if (icon) {
-    const { type = "CIRCLE", lg = true, img } = icon;
+    const { type = "CIRCLE", lg = false, img } = icon;
     let width, height;
 
     if (lg) {
