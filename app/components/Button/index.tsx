@@ -1,40 +1,23 @@
 import Image from "next/image";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
 type Display = {
-  type?: "ICON" | "REGULAR";
+  type?: "ICON";
   size?: "SMALL";
-};
-
-type BaseProps = {
-  display?: Display;
-  onClick?: () => void;
 };
 
 type IconImage = {
   src: string,
   alt: string,
 }
-
-type IconProps = BaseProps & {
-  display: { type: "ICON"; size?: "SMALL" };
-  icon: IconImage;
-};
-
-type RegularProps = BaseProps & {
-  display: { type: "REGULAR"; size?: "SMALL" };
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+  display?: Display;
   icon?: IconImage;
+  children?: ReactNode;
 };
-
-type Props = IconProps | RegularProps;
-
 
 export default function Button(props: Props) {
-  const handleClick = () => {
-    props.onClick?.();
-  };
-
-
-  if (props.display.type === "ICON" && props.icon) {
+  if (props.display?.type === "ICON" && props.icon) {
     let width, height;
   
     if (props.display.size === "SMALL") {
@@ -48,7 +31,7 @@ export default function Button(props: Props) {
     return (
       <button
         className="flex p-2"
-        onClick={handleClick}
+        {...props}
       >
         <Image
           className="rounded-full self-center"
@@ -60,6 +43,13 @@ export default function Button(props: Props) {
       </button>
     );
   } else {
-    <button />;
+    return (
+      <button
+        className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        {...props}
+      >
+        {props.children}
+      </button>
+    );
   }
 }

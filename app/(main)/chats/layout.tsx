@@ -2,7 +2,6 @@
 
 import React, { ReactNode, useState } from "react";
 import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
-import { UserProvider } from "@/app/contexts/UserContext";
 import { Role } from "@/app/types";
 import toast from "react-hot-toast";
 import RoleSelector from "@/app/components/RoleSelector";
@@ -39,29 +38,25 @@ export default function ChatsLayout({
   };
 
   return (
-    <>
-      <UserProvider>
-        <div className="flex">
-          <div className="flex-shrink-0 border-e border-zinc-800 px-1 h-screen overflow-y-scroll no-scrollbar">
-            <RoleSelector
-              selectedRole={currentRole}
-              onSelectedRole={handleSelectRole}
-            />
-          </div>
-          <div className="flex-grow">
-            {accessToken && currentRole?._id && (
-              <SendbirdProvider
-                appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
-                userId={currentRole._id}
-                accessToken={accessToken}
-                theme="dark"
-              >
-                {children}
-              </SendbirdProvider>
-            )}
-          </div>
-        </div>
-      </UserProvider>
-    </>
+    <div className="flex">
+      <div className="flex-shrink-0 border-e border-zinc-800 px-1 h-screen overflow-y-scroll no-scrollbar">
+        <RoleSelector
+          selectedRole={currentRole}
+          onSelectedRole={handleSelectRole}
+        />
+      </div>
+      <div className="flex-grow">
+        {accessToken && currentRole?._id && (
+          <SendbirdProvider
+            appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
+            userId={currentRole._id}
+            accessToken={accessToken}
+            theme="dark"
+          >
+            {children}
+          </SendbirdProvider>
+        )}
+      </div>
+    </div>
   );
 }

@@ -7,8 +7,12 @@ interface UserAvatarProps {
   onClick?: (user: User) => void;
 }
 
+interface RoleAvatarProps {
+  role: Role,
+}
+
 export const UserAvatar = (props: UserAvatarProps) => {
-  const { user,onClick } = props;
+  const { user } = props;
 
   return (
     <Button 
@@ -16,15 +20,16 @@ export const UserAvatar = (props: UserAvatarProps) => {
         type: "ICON",
       }}
       icon={{
-        src: user.profile.avatar || "/default.jpg",
+        src: user.profile?.avatar || "/default.jpg",
         alt: "avatar",
       }}
-      onClick={() => onClick?.(user)}
     />
   );
 };
 
-export const RoleAvatar = ({ role }: { role: Role }) => {
+export const RoleAvatar = (props: RoleAvatarProps) => {
+  const { role } = props;
+
   return (
     <Button 
       display={{

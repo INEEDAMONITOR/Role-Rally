@@ -8,9 +8,9 @@ import { RoleAvatar, UserAvatar } from "@/app/components/Avatar";
 import { AddRole } from "@/app/components/AddRole";
 
 interface RoleSwitcherProps {
-    selectedRole: Role | null,
-    onSelectedRole?: (role: Role) => void;
-  }
+  selectedRole: Role | null,
+  onSelectedRole?: (role: Role) => void;
+}
 
 export default function RoleSelector(props: RoleSwitcherProps) {
   const { user } = useContext(UserContext);
@@ -52,7 +52,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             </div>
           </li>
         ))}
-        <li className="flex justify-center mb-1 p-2">
+        <li className="flex justify-center mb-1 p-2 rounded-2xl hover:bg-zinc-800">
           <AddRole />
         </li>
       </ul>
