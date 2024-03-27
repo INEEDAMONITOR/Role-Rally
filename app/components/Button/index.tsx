@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Display = {
-  type?: "ICON";
-  size?: "SMALL";
+type IconButton = {
+  type?: "CIRCLE" | "ROUND_BUTTON";
+  lg?: boolean;
+  img?: IconImage;
 };
 
 type IconImage = {
@@ -11,44 +12,50 @@ type IconImage = {
   alt: string,
 }
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  display?: Display;
-  icon?: IconImage;
+  icon?: IconButton;
+  selected?: boolean;
   children?: ReactNode;
 };
 
 export default function Button(props: Props) {
-  if (props.display?.type === "ICON" && props.icon) {
+  const { icon, selected, children } = props;
+
+  if (icon) {
+    const { type = "CIRCLE", lg = true, img } = icon;
     let width, height;
-  
-    if (props.display.size === "SMALL") {
-      width = 42;
-      height = 42;
-    } else {
+
+    if (lg) {
       width = 50;
       height = 50;
+    } else {
+      width = 42;
+      height = 42;
     }
 
     return (
       <button
-        className="flex p-2"
         {...props}
+        className={`flex p-2 rounded-2xl ${selected ? "bg-purple-500" : "hover:bg-zinc-700"} ${props.className}`}
       >
-        <Image
-          className="rounded-full self-center"
-          src={props.icon.src}
-          alt={props.icon.alt}
-          width={width}
-          height={height}
-        />
+        {img ?
+          <Image
+            className={`${type === "CIRCLE" ? "rounded-full" : "rounded"} self-center`}
+            src={img.src}
+            alt={img.alt}
+            width={width}
+            height={height}
+          /> :
+          children
+        }
       </button>
     );
   } else {
     return (
       <button
-        className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         {...props}
+        className={`rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${props.className}`}
       >
-        {props.children}
+        {children}
       </button>
     );
   }
