@@ -27,8 +27,9 @@ const AddRole = () => {
           src: "/AddIconImage.jpg",
           alt: "Add Role"
         },
+        hoverable: false,
       }}
-      className="opacity-50 hover:opacity-80 hover:bg-black"
+      className="opacity-50 hover:opacity-70 hover:bg-black"
       onClick={handleCreateRole}
     />
   );

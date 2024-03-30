@@ -5,6 +5,7 @@ type IconButton = {
   type?: "CIRCLE" | "ROUND_BUTTON";
   lg?: boolean;
   img?: IconImage;
+  hoverable?: boolean;
 };
 
 type IconImage = {
@@ -21,7 +22,7 @@ export default function Button(props: Props) {
   const { icon, selected, children } = props;
 
   if (icon) {
-    const { type = "CIRCLE", lg = false, img } = icon;
+    const { type = "CIRCLE", lg = false, img, hoverable = true } = icon;
     let width, height;
 
     if (lg) {
@@ -35,7 +36,10 @@ export default function Button(props: Props) {
     return (
       <button
         {...props}
-        className={`flex p-2 rounded-2xl ${selected ? "bg-purple-500" : "hover:bg-zinc-700"} ${props.className}`}
+        className={`flex p-2 rounded-2xl ${
+          selected ? "bg-purple-500" :
+            hoverable ? "hover:bg-zinc-700" : ""}
+          ${props.className}`}
       >
         {img ?
           <Image
