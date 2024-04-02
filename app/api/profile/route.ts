@@ -16,6 +16,7 @@ const updateProfile = async (req: NextRequest) => {
     avatar: body.avatar,
     about: body.about,
     pronouns: body.pronouns,
+    username: body.username,
   };
   try {
     const profile = await ProfileModel.findByIdAndUpdate(

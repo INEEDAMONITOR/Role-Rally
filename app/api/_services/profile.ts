@@ -7,11 +7,12 @@ export const createProfile = async () => {
   try {
     return await ProfileModel.create({
       displayName: "New Role",
-      email: [],
-      phone: [],
+      email: "",
+      phone: "",
       avatar: "",
       about: "",
       pronouns: "",
+      username: "",
     });
   } catch (error) {
     warn(error);

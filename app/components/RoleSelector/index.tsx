@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import { RoleAvatar, UserAvatar } from "@/app/components/Avatar";
 import Button from "@/app/components/Button";
 import { useRouter } from "next/navigation";
+import { Tooltip } from "flowbite-react";
+import ProfileCard from "@/app/components/ProfileCard";
 
 interface RoleSwitcherProps {
   selectedRole: Role | null,
@@ -96,12 +98,22 @@ export default function RoleSelector(props: RoleSwitcherProps) {
       <div className="w-full flex-grow flex flex-col justify-between items-center">
         <div className="flex flex-col items-center space-y-2">
           {roles.map((role) => (
-            <RoleAvatar
-              key={role._id}
-              role={role}
-              selected={currentRole?._id === role._id}
-              onClick={handleSelectRole}
-            />
+            <div key={role._id}>
+              <Tooltip
+                className="bg-black border border-zinc-800"
+                content={
+                  <ProfileCard data={role.profile} />
+                }
+                placement="right"
+                arrow={false}
+              >
+                <RoleAvatar
+                  role={role}
+                  selected={currentRole?._id === role._id}
+                  onClick={handleSelectRole}
+                />
+              </Tooltip>
+            </div>
           ))}
           <More />
         </div>

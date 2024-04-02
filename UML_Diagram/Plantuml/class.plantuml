@@ -54,11 +54,12 @@ class RoleSetting{
 class Profile {
     _id: string
     displayName: string
-    email: Email[]
-    phone: Phone[]
+    email: string
+    phone: Phone
     avatar: string
     about: string
     pronouns: string
+    username: string
 }
 class ProfileSetting{
   +changeName(string);
