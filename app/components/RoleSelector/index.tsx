@@ -101,6 +101,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             <div key={role._id}>
               <Tooltip
                 className="bg-black border border-zinc-800"
+                animation={false}
                 content={
                   <ProfileCard data={role.profile} />
                 }

@@ -8,7 +8,8 @@ interface Phone {
 export interface IProfile {
   _id: string;
   ownerRoleId: Types.ObjectId;
-  displayName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: Phone;
   avatar: string;
@@ -23,9 +24,10 @@ const PhoneSchema = new mongoose.Schema<Phone>({
 });
 
 export const ProfileSchema = new mongoose.Schema<IProfile>({
-  displayName: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: String,
   email: { type: String, required: true },
-  phone: { type: PhoneSchema, required: true },
+  phone: { type: PhoneSchema },
   ownerRoleId: {
     type: mongoose.Schema.Types.ObjectId,
   },

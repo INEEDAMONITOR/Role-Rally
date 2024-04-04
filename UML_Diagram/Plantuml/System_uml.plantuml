@@ -63,7 +63,6 @@ class Role {
     _id: string
     profileId: string
     ownerId: string
-    accessibility: Accessibility
     friends: string[]
     chatRooms: string[]
 
@@ -88,7 +87,8 @@ class RoleSetting{
 
 class Profile {
     _id: string
-    displayName: string
+    firstName: string;
+    lastName: string;
     email: string
     phone: Phone
     avatar: string

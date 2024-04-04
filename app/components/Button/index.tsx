@@ -57,7 +57,7 @@ export default function Button(props: Props) {
     return (
       <button
         {...props}
-        className={`rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${props.className}`}
+        className={`rounded-md px-4 py-3 leading-6 text-sm bg-indigo-700 hover:bg-indigo-600 shadow-sm ${props.className}`}
       >
         {children}
       </button>

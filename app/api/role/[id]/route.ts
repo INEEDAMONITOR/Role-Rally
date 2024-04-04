@@ -2,7 +2,6 @@ import { handler } from "@/app/api/_middleware/handler";
 import { validateRoleIdWithJWT } from "@/app/api/_middleware/role";
 import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 import { deleteRole, getRoleWithProfile } from "@/app/api/_services/role";
-import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -15,23 +14,22 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns A NextResponse object with the role data or an error message.
  */
 const getRoleByRoleId = async (
-  req: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
   try {
     let role = await getRoleWithProfile({ _id: id });
-    if (role.accessibility === "public") {
-      role = {
-        _id: role._id,
-        profile: role.profile,
-      };
-      return NextResponse.json({
-        message: "Role fetched successfully",
-        data: role,
-      });
-    }
-    return NextResponse.json({ message: "Role not found" }, { status: 404 });
+
+    role = {
+      _id: role._id,
+      profile: role.profile,
+    };
+    return NextResponse.json({
+      message: "Role fetched successfully",
+      data: role,
+    });
+
   } catch (e) {
     console.error(e);
     return NextResponse.json(

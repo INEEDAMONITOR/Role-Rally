@@ -51,7 +51,7 @@ export default function ImageUploader(props: Props) {
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       {loading ?
-        <div className="w-40 flex justify-center">
+        <div className="w-40 h-full flex justify-center items-center">
           <Spinner
             color="purple"
             size="xl"

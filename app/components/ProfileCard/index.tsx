@@ -1,6 +1,5 @@
 import { Profile } from "@/app/types";
-import { Avatar } from "flowbite-react";
-import Button from "@/app/components/Button";
+import { Avatar, Button } from "flowbite-react";
 
 interface Props {
   data: Profile;
@@ -18,12 +17,12 @@ export default function ProfileCard(props: Props) {
       <div className="flex w-72 justify-between">
         <Avatar
           img={data.avatar}
-          alt={`avatar of ${data.displayName}`}
+          alt={`avatar of ${data.firstName}`}
           rounded
         >
           <div className="space-y-1">
             <div>
-              {data.displayName}
+              {data.firstName}
             </div>
             <div className="text-gray-300">
               {`@${data.username}`}
@@ -31,16 +30,22 @@ export default function ProfileCard(props: Props) {
           </div>
         </Avatar>
         <div className="self-center">
-          <Button onClick={() => handleViewProfile(data)}>
+          <Button
+            size="sm"
+            color="purple"
+            onClick={() => handleViewProfile(data)}
+          >
             View
           </Button>
         </div>
       </div>
-      <div className="mt-6">
-        <div className="italic text-gray-300 font-thin">
-          {`"${data.about}"`}
+      {data.about && (
+        <div className="mt-6">
+          <div className="italic text-gray-300 font-thin">
+            {`"${data.about}"`}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

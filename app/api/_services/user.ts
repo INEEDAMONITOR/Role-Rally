@@ -1,16 +1,12 @@
 import { Types } from "mongoose";
 import UserModel, { IUser } from "@/app/api/_models/User";
-import { warn } from "console";
 import bcrypt from "bcrypt";
 import { Selector, generateFindOneQuery } from "@/app/api/_services/utils";
-import { createRole, deleteRole } from "@/app/api/_services/role";
+import { deleteRole } from "@/app/api/_services/role";
 import {
-  createProfile,
   deleteProfile,
   getProfile,
 } from "@/app/api/_services/profile";
-import RoleModel from "@/app/api/_models/Role";
-import { sendbirdRequests } from "@/app/_lib/sendbird";
 
 interface CreateUserProp {
   name: string;
@@ -89,40 +85,15 @@ export const deleteUser = async (userId: Types.ObjectId) => {
 };
 
 export const createUser = async (user: CreateUserProp) => {
-  let newRole = null;
-  let newProfile = null;
   try {
-    newRole = await createRole();
-    newProfile = await createProfile();
-
     const newUser = await UserModel.create({
       name: user.name,
       email: user.email,
       password: user.password,
-      profileId: newProfile._id,
-      profile: newProfile,
-      rolesId: [newRole._id],
     });
-
-    await RoleModel.findByIdAndUpdate(newRole._id, {
-      ownerId: newUser._id,
-    }).exec();
-
-    await sendbirdRequests.createUser({
-      user_id: newRole._id,
-      nickname: newProfile.displayName,
-      profile_url:
-        "https://sendbird.com/main/img/profiles/profile_05_512px.png",
-      issue_access_token: true,
-    });
+    
     return newUser;
   } catch (error) {
-    if (newRole) {
-      deleteRole(newRole._id);
-    }
-    if (newProfile) {
-      deleteProfile(newProfile._id);
-    }
-    warn(error);
+    console.error(error);
   }
 };

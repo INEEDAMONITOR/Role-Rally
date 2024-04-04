@@ -1,12 +1,9 @@
 import mongoose, { Types } from "mongoose";
 
-export type Accessibility = "public" | "private" | "protected";
-
 export interface IRole {
   _id: Types.ObjectId;
   profileId: Types.ObjectId;
   ownerId: Types.ObjectId;
-  accessibility: Accessibility;
   friends: Types.ObjectId[];
   chatRooms: Types.ObjectId[];
 }
@@ -20,11 +17,6 @@ const RoleSchema = new mongoose.Schema<IRole>({
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-  },
-  accessibility: {
-    type: String,
-    required: true,
-    enum: ["public", "private", "protected"],
   },
   friends: {
     type: [mongoose.Schema.Types.ObjectId],
