@@ -1,6 +1,6 @@
 import React from "react";
 import { Role, User } from "@/app/types";
-import Button from "@/app/components/Button";
+import { Avatar } from "flowbite-react";
 
 interface UserAvatarProps {
   user: User;
@@ -17,15 +17,9 @@ export const UserAvatar = (props: UserAvatarProps) => {
   const { user } = props;
 
   return (
-    <Button
-      icon={{
-        type: "ROUND_BUTTON",
-        lg: true,
-        img: {
-          src: user.profile?.avatar || "/default.jpg",
-          alt: "avatar",
-        }
-      }}
+    <Avatar
+      className={"cursor-pointer p-3 hover:bg-zinc-700"}
+      img={user.profile?.avatar}
     />
   );
 };
@@ -38,14 +32,10 @@ export const RoleAvatar = (props: RoleAvatarProps) => {
   };
 
   return (
-    <Button
-      selected={selected}
-      icon={{
-        img: {
-          src: role.profile?.avatar || "/default.jpg",
-          alt: "avatar",
-        }
-      }}
+    <Avatar
+      className={`cursor-pointer p-3 rounded-2xl ${selected ? "bg-purple-600" :"hover:bg-zinc-700"}`}
+      rounded
+      img={role.profile?.avatar}
       onClick={handleClick}
     />
   );

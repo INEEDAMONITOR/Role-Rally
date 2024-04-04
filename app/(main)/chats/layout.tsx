@@ -46,7 +46,7 @@ export default function ChatsLayout({
         />
       </div>
       <div className="flex-grow">
-        {accessToken && currentRole?._id && (
+        {(accessToken && currentRole?._id) ? (
           <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
             userId={currentRole._id}
@@ -55,6 +55,12 @@ export default function ChatsLayout({
           >
             {children}
           </SendbirdProvider>
+        ): (
+          <div className="flex justify-center text-center items-center h-screen">
+            <h1 className="text-2xl text-gray-500">
+              Choose one role on the left
+            </h1>
+          </div>
         )}
       </div>
     </div>
