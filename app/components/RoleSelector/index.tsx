@@ -5,10 +5,9 @@ import { Role } from "@/app/types";
 import { getByCookies } from "@/app/utils/https";
 import { useContext, useEffect, useState } from "react";
 import { RoleAvatar, UserAvatar } from "@/app/components/RoleSelector/Avatar";
-import { Tooltip } from "flowbite-react";
+import { ListGroup, Tooltip } from "flowbite-react";
 import ProfileCard from "@/app/components/ProfileCard";
-import { AddRole } from "./AddRole";
-import { More } from "./More";
+import { Bars } from "@/app/components/Icon";
 
 interface RoleSwitcherProps {
   selectedRole: Role | null,
@@ -62,10 +61,23 @@ export default function RoleSelector(props: RoleSwitcherProps) {
               </Tooltip>
             </div>
           ))}
-          <More />
         </div>
         <div className="p-2">
-          <AddRole />
+          <Tooltip
+            content={(
+              <div className="flex justify-center">
+                <ListGroup className="w-48">
+                  <ListGroup.Item href="/settings/create-role">
+                    Roles Management
+                  </ListGroup.Item>
+                </ListGroup>
+              </div>
+            )}
+            trigger="click"
+            arrow={false}
+          >
+            <Bars className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer" />
+          </Tooltip>
         </div>
       </div>
     </div>

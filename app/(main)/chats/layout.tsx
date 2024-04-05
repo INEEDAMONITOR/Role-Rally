@@ -1,10 +1,10 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
-import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
-import { Role } from "@/app/types";
-import toast from "react-hot-toast";
 import RoleSelector from "@/app/components/RoleSelector";
+import { Role } from "@/app/types";
+import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
+import { ReactNode, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function ChatsLayout({
   children,
@@ -14,27 +14,23 @@ export default function ChatsLayout({
   const [accessToken, setAccessToken] = useState();
   const [currentRole, setCurrentRole] = useState<Role | null>(null);
 
-  const handleSelectRole = (role: Role) => {
+  const handleSelectRole = async (role: Role) => {
     const roleId = role._id;
 
-    const fetchUser = async () => {
-      try {
-        const res = await (await fetch(`/api/users/${roleId}`)).json();
+    try {
+      const res = await (await fetch(`/api/users/${roleId}`)).json();
 
-        if (res?.data?.error) {
-          toast.error(res?.data?.message);
-          return;
-        }
-
-        localStorage.setItem("sendbirdUserId", roleId);
-        setCurrentRole(role);
-        setAccessToken(res.data.access_token);
-      } catch (e) {
-        console.error(e);
+      if (res?.data?.error) {
+        toast.error(res?.data?.message);
+        return;
       }
-    };
 
-    fetchUser();
+      localStorage.setItem("sendbirdUserId", roleId);
+      setCurrentRole(role);
+      setAccessToken(res.data.access_token);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
