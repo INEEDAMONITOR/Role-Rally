@@ -126,8 +126,11 @@ const ChannelList = ({ currentChannelUrl, onChannelSelect }: Props) => {
             />
           );
         }) :
-        <div className="flex justify-center h-80 pt-40">
-          <Inbox />
+        <div className="flex flex-col items-center space-y-2 h-80 pt-48 text-gray-400">
+          <Inbox className="w-20 h-20" />
+          <div>
+            No Chats
+          </div>
         </div>
       }
     </div>

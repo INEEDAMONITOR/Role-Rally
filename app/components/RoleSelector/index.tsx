@@ -82,7 +82,9 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             trigger="click"
             arrow={false}
           >
-            <Bars className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer" />
+            <div className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer">
+              <Bars />
+            </div>
           </Tooltip>
         </div>
       </div>

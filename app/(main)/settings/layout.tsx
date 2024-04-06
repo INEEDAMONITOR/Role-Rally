@@ -35,10 +35,17 @@ export default function SettingsLayout({
               trigger="click"
               arrow={false}
             >
-              <Bars className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer" />
+              <div className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer">
+                <Bars />
+              </div>
             </Tooltip>
           </div> :
-          <Back onClick={handleBack} />
+          <div
+            className="flex items-center w-12 h-full text-gray-500 hover:text-gray-400 cursor-pointer"
+            onClick={handleBack}
+          >
+            <Back />
+          </div>
         }
       </NavBar>
       {children}
