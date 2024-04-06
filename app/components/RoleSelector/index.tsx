@@ -4,10 +4,9 @@ import { UserContext } from "@/app/contexts/UserContext";
 import { Role } from "@/app/types";
 import { getByCookies } from "@/app/utils/https";
 import { useContext, useEffect, useState } from "react";
-import { RoleAvatar, UserAvatar } from "@/app/components/RoleSelector/Avatar";
-import { ListGroup, Tooltip } from "flowbite-react";
-import ProfileCard from "@/app/components/ProfileCard";
+import { Avatar, ListGroup, Tooltip } from "flowbite-react";
 import { Bars } from "@/app/components/Icon";
+import RoleAvatar from "@/app/components/RoleSelector/RoleAvatar";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
@@ -35,7 +34,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
 
         setRoles(res);
         props.onRolesFetchingSuccess?.(res);
-      } catch(e) {
+      } catch (e) {
         props.onRolesFetchingError?.(e);
       }
     };
@@ -51,43 +50,34 @@ export default function RoleSelector(props: RoleSwitcherProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center">
-        <div className="mt-3 border-b border-zinc-700 pb-3 mb-3 mx-auto">
-          <UserAvatar user={user} />
+        <div className="mb-3 p-3 border-b border-zinc-700 mx-auto">
+          <Avatar placeholderInitials="RR" />
         </div>
       </div>
 
       <div className="w-full flex-grow flex flex-col justify-between items-center">
         <div className="flex flex-col items-center space-y-2">
           {roles.map((role) => (
-            <div key={role._id}>
-              <Tooltip
-                className="bg-black border border-zinc-800"
-                animation={false}
-                content={
-                  <ProfileCard data={role.profile} />
-                }
-                placement="right"
-                arrow={false}
-              >
-                <RoleAvatar
-                  role={role}
-                  selected={selectedRoleId === role._id}
-                  onClick={handleSelectRole}
-                />
-              </Tooltip>
-            </div>
+            <RoleAvatar
+              key={role._id}
+              role={role}
+              selected={selectedRoleId === role._id}
+              onClick={handleSelectRole}
+            />
           ))}
         </div>
         <div className="p-2">
           <Tooltip
             content={(
-              <div className="flex justify-center">
-                <ListGroup className="w-48">
-                  <ListGroup.Item href="/settings/create-role">
-                    Roles Management
-                  </ListGroup.Item>
-                </ListGroup>
-              </div>
+              // TODO: ListGroup theme adjust
+              <ListGroup className="w-48">
+                <ListGroup.Item href="/settings/create-role">
+                  Add New Role
+                </ListGroup.Item>
+                <ListGroup.Item href="/login?out=1">
+                  Log Out
+                </ListGroup.Item>
+              </ListGroup>
             )}
             trigger="click"
             arrow={false}

@@ -1,14 +1,16 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import { Button } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { logout } from "@/app/utils/logout";
 
 export default function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitLoading, setSubmitLoading] = useState(false);
 
   const handleLogin = async (formData: FormData) => {
@@ -46,6 +48,14 @@ export default function Login() {
   const handleCreateAccount = () => {
     router.replace("/signup");
   };
+
+  useEffect(() => {
+    const isLogOut = !!searchParams.get("out");
+
+    if (isLogOut) {
+      logout();
+    }
+  }, []);
 
   return (
     <div className="flex min-h-full flex-col justify-center px-10 py-12">

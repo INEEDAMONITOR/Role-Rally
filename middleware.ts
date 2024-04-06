@@ -5,11 +5,17 @@ const PROTECTED_ROUTES = ["/chats", "/role-demo"];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("roleRallyUserToken")?.value;
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   if (!PROTECTED_ROUTES.some(p => pathname.startsWith(p))) {
     if (token) {
       if (pathname === "/login") {
+        const isOut = !!searchParams.get("out");
+
+        if (isOut) {
+          return NextResponse.next();
+        }
+
         return NextResponse.redirect(new URL("/chats", request.url));
       }
     } else {
