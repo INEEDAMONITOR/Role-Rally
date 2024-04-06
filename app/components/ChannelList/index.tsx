@@ -7,7 +7,7 @@ import { BaseMessage, UserMessage } from "@sendbird/chat/message";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
 
 interface Props {
-  currentChannel: GroupChannel | null;
+  currentChannelUrl: string | null;
   // eslint-disable-next-line no-unused-vars
   onChannelSelect: (channel: GroupChannel) => void;
 }
@@ -56,7 +56,7 @@ const ChannelListItem = (props:
   );
 };
 
-const ChannelList = ({ currentChannel, onChannelSelect }: Props) => {
+const ChannelList = ({ currentChannelUrl, onChannelSelect }: Props) => {
   const { initialized, allChannels } = useChannelListContext();
   const store = useSendbirdStateContext();
   const user = store?.stores?.userStore?.user;
@@ -100,7 +100,7 @@ const ChannelList = ({ currentChannel, onChannelSelect }: Props) => {
       </div>
       {
         allChannels.map(c => {
-          const selected = c.url === currentChannel?.url;
+          const selected = c.url === currentChannelUrl;
           let coverUrl = c.coverUrl;
           let name = c.name;
 

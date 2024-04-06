@@ -10,22 +10,38 @@ import ProfileCard from "@/app/components/ProfileCard";
 import { Bars } from "@/app/components/Icon";
 
 interface RoleSwitcherProps {
-  selectedRole: Role | null,
+  selectedRoleId?: string,
   onSelectedRole?: (role: Role) => void;
+  onRolesFetching?: () => void;
+  onRolesFetchingSuccess?: (roles: Role[]) => void;
+  onRolesFetchingError?: (error: any) => void;
 }
 
 export default function RoleSelector(props: RoleSwitcherProps) {
+  const { selectedRoleId, onSelectedRole } = props;
   const { user } = useContext(UserContext);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [currentRole, setCurrentRole] = useState<Role | null>(null);
 
   const handleSelectRole = (role: Role) => {
-    setCurrentRole(role);
-    props.onSelectedRole?.(role);
+    onSelectedRole?.(role);
   };
 
   useEffect(() => {
-    getByCookies("role").then((res) => setRoles(res as Role[]));
+    const fetchRoles = async () => {
+      try {
+        props.onRolesFetching?.();
+
+        const res: Role[] = await getByCookies("role");
+
+        setRoles(res);
+        props.onRolesFetchingSuccess?.(res);
+      } catch(e) {
+        props.onRolesFetchingError?.(e);
+      }
+    };
+
+    fetchRoles();
+
   }, []);
 
   if (!user) {
@@ -55,7 +71,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
               >
                 <RoleAvatar
                   role={role}
-                  selected={currentRole?._id === role._id}
+                  selected={selectedRoleId === role._id}
                   onClick={handleSelectRole}
                 />
               </Tooltip>
