@@ -6,12 +6,14 @@ import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
 import { ReactNode, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner } from "flowbite-react";
+import { useRouter } from "next/navigation";
 
 export default function ChatsLayout({
   children,
 }: {
   children: ReactNode
 }) {
+  const router = useRouter();
   const [accessToken, setAccessToken] = useState();
   const [currentRoleId, setCurrentRoleId] = useState<string>();
   const [isRolesLoading, setRolesLoading] = useState(true);
@@ -25,6 +27,30 @@ export default function ChatsLayout({
     }
 
     return res.data.access_token;
+  };
+
+
+  const handleSelectRole = async (role: Role) => {
+    const roleId = role._id;
+    const token = await fetchAccessToken(roleId);
+    localStorage.setItem("roleId", roleId);
+    setCurrentRoleId(roleId);
+    setAccessToken(token);
+
+    // TODO: fix role switching hack
+    location.href = "/chats";
+  };
+
+  const handleRolesFetchingSuccess = (res: Role[]) => {
+    setRolesLoading(false);
+
+    if (res.length === 0) {
+      router.replace("/settings/create-role?new=1");
+    }
+  };
+
+  const handleRolesFetchingError = () => {
+    setRolesLoading(false);
   };
 
   useEffect(() => {
@@ -41,32 +67,18 @@ export default function ChatsLayout({
 
   }, []);
 
-  const handleSelectRole = async (role: Role) => {
-    const roleId = role._id;
-    const token = await fetchAccessToken(roleId);
-    localStorage.setItem("roleId", roleId);
-    setCurrentRoleId(roleId);
-    setAccessToken(token);
-
-    location.href = "/chats";
-  };
-
-  const handleRolesFetchingCompleted = () => {
-    setRolesLoading(false);
-  };
-
   return (
     <div className="flex">
       <div className="flex-shrink-0 border-e border-zinc-800 px-1 h-screen overflow-y-scroll no-scrollbar">
         <RoleSelector
           selectedRoleId={currentRoleId}
           onSelectedRole={handleSelectRole}
-          onRolesFetchingSuccess={handleRolesFetchingCompleted}
-          onRolesFetchingError={handleRolesFetchingCompleted}
+          onRolesFetchingSuccess={handleRolesFetchingSuccess}
+          onRolesFetchingError={handleRolesFetchingError}
         />
       </div>
       <div className="flex-grow">
-        {(accessToken && currentRoleId) ? (
+        {(!isRolesLoading && accessToken && currentRoleId) ? (
           <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
             userId={currentRoleId}

@@ -4,7 +4,6 @@ class User {
     name: string
     email: string
     password: string
-    profileId: string
     rolesId: string[]
 
     +createAccount(): void;

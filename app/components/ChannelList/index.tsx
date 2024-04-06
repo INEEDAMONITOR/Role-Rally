@@ -5,6 +5,7 @@ import CreateChannel from "@sendbird/uikit-react/CreateChannel";
 import { useState } from "react";
 import { BaseMessage, UserMessage } from "@sendbird/chat/message";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
+import { Inbox } from "@/app/components/Icon";
 
 interface Props {
   currentChannelUrl: string | null;
@@ -98,7 +99,7 @@ const ChannelList = ({ currentChannelUrl, onChannelSelect }: Props) => {
           New
         </button>
       </div>
-      {
+      {allChannels.length > 0 ?
         allChannels.map(c => {
           const selected = c.url === currentChannelUrl;
           let coverUrl = c.coverUrl;
@@ -124,7 +125,10 @@ const ChannelList = ({ currentChannelUrl, onChannelSelect }: Props) => {
               onClick={() => onChannelSelect(c)}
             />
           );
-        })
+        }) :
+        <div className="flex justify-center h-80 pt-40">
+          <Inbox />
+        </div>
       }
     </div>
   );

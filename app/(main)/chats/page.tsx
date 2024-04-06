@@ -19,15 +19,7 @@ export default function Chats() {
         </ChannelListProvider>
       </div>
       <div className="basis-4/5">
-        {currentChannelUrl ?
-          <Channel channelUrl={currentChannelUrl} />
-          : (
-            <div className="flex justify-center text-center items-center h-screen">
-              <h1 className="text-2xl text-gray-500">
-                Choose one chat on the left
-              </h1>
-            </div>
-          )}
+        {currentChannelUrl && <Channel channelUrl={currentChannelUrl} />}
       </div>
     </main>
   );

@@ -20,9 +20,7 @@ export interface Profile extends Omit<IProfile, "_id"> {
   _id: string;
 }
 
-export interface User extends Omit<IUser, "_id" | "profileId" | "rolesId"> {
+export interface User extends Omit<IUser, "_id"  | "rolesId"> {
   _id: string;
-  profileId: string;
   rolesId: string[];
-  profile: Profile;
 }

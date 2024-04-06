@@ -33,8 +33,7 @@ export const createRole = async (userId: string | Types.ObjectId, profilePayload
   if (!firstName || !email || !username) {
     throw new Error("profile payload error");
   }
-  // TODO: validate profilePayload
-  
+  // TODO: validate profilePayload, like username duplicates
   await dbConnect();
   
   const profile: IProfile = await ProfileModel.create(profilePayload);

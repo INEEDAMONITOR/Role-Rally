@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/chats", "/role-demo"];
+const PROTECTED_ROUTES = ["/chats", "/role-demo", "/settings"];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("roleRallyUserToken")?.value;

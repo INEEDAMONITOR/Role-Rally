@@ -1,21 +1,16 @@
 import { Types } from "mongoose";
 import UserModel, { IUser } from "@/app/api/_models/User";
 import bcrypt from "bcrypt";
-import { Selector, generateFindOneQuery } from "@/app/api/_services/utils";
+import { generateFindOneQuery } from "@/app/api/_services/utils";
 import { deleteRole } from "@/app/api/_services/role";
-import {
-  deleteProfile,
-  getProfile,
-} from "@/app/api/_services/profile";
 
 interface CreateUserProp {
   name: string;
   email: string;
   password: string;
 }
-interface UserProps extends Omit<IUser, "_id" | "profileId" | "rolesId"> {
+interface UserProps extends Omit<IUser, "_id" | "rolesId"> {
   _id: string | Types.ObjectId;
-  profileId: string | Types.ObjectId;
   rolesId: string[] | Types.ObjectId[];
 }
 
@@ -50,23 +45,6 @@ export const getUser = generateFindOneQuery<typeof UserModel, UserQueryProps>(
   UserModel
 );
 
-export const getUserWithProfile = async (
-  props: UserQueryProps,
-  selector?: Selector
-) => {
-  let user = await getUser(props, selector);
-  try {
-    if (user) {
-      const profile = await getProfile(user.profileId);
-      user = { ...user.toObject(), profile };
-    }
-    return user;
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-};
-
 export const deleteUser = async (userId: Types.ObjectId) => {
   try {
     const user = (await UserModel.findById(userId).exec()) as IUser;
@@ -74,7 +52,6 @@ export const deleteUser = async (userId: Types.ObjectId) => {
       for (const role of user.rolesId) {
         deleteRole(role._id);
       }
-      deleteProfile(user.profileId);
       await UserModel.findByIdAndDelete(user._id);
     }
   } catch (error) {
@@ -86,13 +63,11 @@ export const deleteUser = async (userId: Types.ObjectId) => {
 
 export const createUser = async (user: CreateUserProp) => {
   try {
-    const newUser = await UserModel.create({
+    return await UserModel.create({
       name: user.name,
       email: user.email,
       password: user.password,
     });
-    
-    return newUser;
   } catch (error) {
     console.error(error);
   }
