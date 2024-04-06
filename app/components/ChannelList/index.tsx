@@ -5,7 +5,7 @@ import CreateChannel from "@sendbird/uikit-react/CreateChannel";
 import { useState } from "react";
 import { BaseMessage, UserMessage } from "@sendbird/chat/message";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
-import { Inbox } from "@/app/components/Icon";
+import { Edit, Inbox } from "@/app/components/Icon";
 
 interface Props {
   currentChannelUrl: string | null;
@@ -82,50 +82,53 @@ const ChannelList = ({ currentChannelUrl, onChannelSelect }: Props) => {
 
   return (
     <div className="bg-black h-full">
-      <div className="flex justify-between p-6">
-        <h1 className="text-4xl font-semibold">
+      <div className="flex justify-between py-7 px-4 fixed bg-black w-80">
+        <div className="text-3xl font-semibold">
           Chats
-        </h1>
+        </div>
         {isCreateChannelVisible && (
           <CreateChannel
             onChannelCreated={handleChannelCreated}
             onCancel={handleCancelCreate}
           />
         )}
-        <button
-          className="text-lg text-purple-400 hover:text-purple-700"
+        <div
+          className="flex items-center cursor-pointer"
           onClick={handleNewClick}
         >
-          New
-        </button>
+          <Edit className="text-gray-200 w-8 h-8" />
+        </div>
       </div>
+      <div className="w-2 h-24" />
       {allChannels.length > 0 ?
-        allChannels.map(c => {
-          const selected = c.url === currentChannelUrl;
-          let coverUrl = c.coverUrl;
-          let name = c.name;
+        <div className="overflow-y-auto h-screen pb-28">
+          {allChannels.map(c => {
+            const selected = c.url === currentChannelUrl;
+            let coverUrl = c.coverUrl;
+            let name = c.name;
 
-          if (c.memberCount === 2) {
-            const partner = c.members.find(m => m.userId !== user?.userId) ?? null;
-            if (partner) {
-              coverUrl = partner.profileUrl;
-              name = partner.nickname;
+            if (c.memberCount === 2) {
+              const partner = c.members.find(m => m.userId !== user?.userId) ?? null;
+              if (partner) {
+                coverUrl = partner.profileUrl;
+                name = partner.nickname;
+              }
             }
-          }
 
 
-          return (
-            <ChannelListItem
-              key={c.url}
-              selected={selected}
-              coverUrl={coverUrl}
-              name={name}
-              preview={c.lastMessage}
-              unreadMessageCount={c.unreadMessageCount}
-              onClick={() => onChannelSelect(c)}
-            />
-          );
-        }) :
+            return (
+              <ChannelListItem
+                key={c.url}
+                selected={selected}
+                coverUrl={coverUrl}
+                name={name}
+                preview={c.lastMessage}
+                unreadMessageCount={c.unreadMessageCount}
+                onClick={() => onChannelSelect(c)}
+              />
+            );
+          })}
+        </div> :
         <div className="flex flex-col items-center space-y-2 h-80 pt-48 text-gray-400">
           <Inbox className="w-20 h-20" />
           <div>

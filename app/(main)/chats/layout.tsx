@@ -77,13 +77,16 @@ export default function ChatsLayout({
           onRolesFetchingError={handleRolesFetchingError}
         />
       </div>
-      <div className="flex-grow">
+      <div className="flex-grow overflow-hidden">
         {(!isRolesLoading && accessToken && currentRoleId) ? (
           <SendbirdProvider
             appId={process.env.NEXT_PUBLIC_SENDBIRD_APP_ID as string}
             userId={currentRoleId}
             accessToken={accessToken}
             theme="dark"
+            colorSet={{
+              "--sendbird-dark-background-600": "#000000"
+            }}
           >
             {children}
           </SendbirdProvider>

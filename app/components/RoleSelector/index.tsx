@@ -50,9 +50,10 @@ export default function RoleSelector(props: RoleSwitcherProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center">
-        <div className="mb-3 p-3 border-b border-zinc-700 mx-auto">
+        <div className="px-3 py-6 mx-auto fixed bg-black z-20">
           <Avatar placeholderInitials="RR" />
         </div>
+        <div className="w-4 h-24" />
       </div>
 
       <div className="w-full flex-grow flex flex-col justify-between items-center">
@@ -66,7 +67,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             />
           ))}
         </div>
-        <div className="p-2">
+        <div className="p-2 fixed bg-black bottom-0">
           <Tooltip
             content={(
               // TODO: ListGroup theme adjust
@@ -87,6 +88,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             </div>
           </Tooltip>
         </div>
+        <div className="w-4 h-20" />
       </div>
     </div>
   );
