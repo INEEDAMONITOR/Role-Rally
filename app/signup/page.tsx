@@ -2,12 +2,13 @@
 
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { Button } from "flowbite-react";
+import { FormEvent } from "react";
 
 export default function SignUp() {
   const router = useRouter();
 
-  const handleCreateAccount = async (e) => {
+  const handleCreateAccount = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
@@ -71,7 +72,7 @@ export default function SignUp() {
               htmlFor="name"
               className="block text-sm font-medium leading-6 text-gray-200"
             >
-              User Name
+              Your name
             </label>
             <div className="mt-2">
               <input
@@ -143,12 +144,13 @@ export default function SignUp() {
           </div>
 
           <div>
-            <button
+            <Button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              color="purple"
+              className="w-full"
             >
               Create account
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -156,7 +158,7 @@ export default function SignUp() {
           Already have an account?
           <a
             href="/login"
-            className="font-semibold text-indigo-500 hover:text-indigo-300 ms-2"
+            className="font-semibold text-purple-500 hover:text-purple-600 ms-2"
           >
             Sign in
           </a>

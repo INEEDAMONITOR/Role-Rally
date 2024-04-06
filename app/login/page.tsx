@@ -3,34 +3,43 @@
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { Button } from "flowbite-react";
+import { useState } from "react";
+import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
+  const [isSubmitLoading, setSubmitLoading] = useState(false);
 
   const handleLogin = async (formData: FormData) => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    if (!email || !password || typeof email !== "string" || typeof password !== "string") {
-      return;
-    }
+    try {
+      setSubmitLoading(true);
+      if (!email || !password || typeof email !== "string" || typeof password !== "string") {
+        return;
+      }
 
-    const res = await (await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      })
-    })).json();
+      const res = await (await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        })
+      })).json();
 
-    if (res?.token) {
-      Cookies.set("roleRallyUserToken", res.token);
-      router.replace("/chats");
-    } else {
-      toast.error(res.message);
+      if (res?.token) {
+        Cookies.set("roleRallyUserToken", res.token);
+        router.replace("/chats");
+      } else {
+        toast.error(res.message);
+      }
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -39,16 +48,19 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          className="mx-auto h-10 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-          alt="Your Company"
+    <div className="flex min-h-full flex-col justify-center px-10 py-12">
+      <div>
+        <Image
+          className="rounded-full"
+          width={200}
+          height={0}
+          src="/tailwindcss-logotype-white.svg"
+          alt="Role Rally"
         />
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">
-          Sign in to your
-          account
+      </div>
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="mt-32 text-center text-4xl font-bold leading-9 tracking-tight text-gray-200">
+          Log in
         </h2>
       </div>
 
@@ -84,14 +96,6 @@ export default function Login() {
               >
                 Password
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-500 hover:text-indigo-300"
-                >
-                  Forgot password?
-                </a>
-              </div>
             </div>
             <div className="mt-2">
               <input
@@ -105,25 +109,25 @@ export default function Login() {
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Sign
-              in
-            </button>
-          </div>
+          <Button
+            type="submit"
+            color="purple"
+            isProcessing={isSubmitLoading}
+            className="flex w-full justify-center rounded-md"
+          >
+            Sign
+            in
+          </Button>
         </form>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-sm text-gray-500">
           Not a member?
           <a
             href="/signup"
-            className="ps-1.5 font-semibold leading-6 text-indigo-500 hover:text-indigo-300 ms-2"
+            className="font-semibold leading-6 text-purple-500 hover:text-purple-600 ms-2"
             onClick={handleCreateAccount}
           >
-            Create an account
+            Join as a member
           </a>
         </p>
       </div>
