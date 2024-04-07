@@ -4,7 +4,6 @@ class User {
     name: string
     email: string
     password: string
-    profileId: string
     rolesId: string[]
 
     +createAccount(): void;
@@ -28,7 +27,6 @@ class Role {
     _id: string
     profileId: string
     ownerId: string
-    accessibility: Accessibility
     friends: string[]
     chatRooms: string[]
 
@@ -53,12 +51,14 @@ class RoleSetting{
 
 class Profile {
     _id: string
-    displayName: string
-    email: Email[]
-    phone: Phone[]
+    firstName: string;
+    lastName: string;
+    email: string
+    phone: Phone
     avatar: string
     about: string
     pronouns: string
+    username: string
 }
 class ProfileSetting{
   +changeName(string);

@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/chats", "/role-demo"];
+const PROTECTED_ROUTES = ["/chats", "/role-demo", "/settings"];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("roleRallyUserToken")?.value;
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   if (!PROTECTED_ROUTES.some(p => pathname.startsWith(p))) {
     if (token) {
       if (pathname === "/login") {
+        const isOut = !!searchParams.get("out");
+
+        if (isOut) {
+          return NextResponse.next();
+        }
+
         return NextResponse.redirect(new URL("/chats", request.url));
       }
     } else {

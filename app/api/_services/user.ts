@@ -1,25 +1,16 @@
 import { Types } from "mongoose";
 import UserModel, { IUser } from "@/app/api/_models/User";
-import { warn } from "console";
 import bcrypt from "bcrypt";
-import { Selector, generateFindOneQuery } from "@/app/api/_services/utils";
-import { createRole, deleteRole } from "@/app/api/_services/role";
-import {
-  createProfile,
-  deleteProfile,
-  getProfile,
-} from "@/app/api/_services/profile";
-import RoleModel from "@/app/api/_models/Role";
-import { sendbirdRequests } from "@/app/_lib/sendbird";
+import { generateFindOneQuery } from "@/app/api/_services/utils";
+import { deleteRole } from "@/app/api/_services/role";
 
 interface CreateUserProp {
   name: string;
   email: string;
   password: string;
 }
-interface UserProps extends Omit<IUser, "_id" | "profileId" | "rolesId"> {
+interface UserProps extends Omit<IUser, "_id" | "rolesId"> {
   _id: string | Types.ObjectId;
-  profileId: string | Types.ObjectId;
   rolesId: string[] | Types.ObjectId[];
 }
 
@@ -54,23 +45,6 @@ export const getUser = generateFindOneQuery<typeof UserModel, UserQueryProps>(
   UserModel
 );
 
-export const getUserWithProfile = async (
-  props: UserQueryProps,
-  selector?: Selector
-) => {
-  let user = await getUser(props, selector);
-  try {
-    if (user) {
-      const profile = await getProfile(user.profileId);
-      user = { ...user.toObject(), profile };
-    }
-    return user;
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-};
-
 export const deleteUser = async (userId: Types.ObjectId) => {
   try {
     const user = (await UserModel.findById(userId).exec()) as IUser;
@@ -78,7 +52,6 @@ export const deleteUser = async (userId: Types.ObjectId) => {
       for (const role of user.rolesId) {
         deleteRole(role._id);
       }
-      deleteProfile(user.profileId);
       await UserModel.findByIdAndDelete(user._id);
     }
   } catch (error) {
@@ -89,40 +62,13 @@ export const deleteUser = async (userId: Types.ObjectId) => {
 };
 
 export const createUser = async (user: CreateUserProp) => {
-  let newRole = null;
-  let newProfile = null;
   try {
-    newRole = await createRole();
-    newProfile = await createProfile();
-
-    const newUser = await UserModel.create({
+    return await UserModel.create({
       name: user.name,
       email: user.email,
       password: user.password,
-      profileId: newProfile._id,
-      profile: newProfile,
-      rolesId: [newRole._id],
     });
-
-    await RoleModel.findByIdAndUpdate(newRole._id, {
-      ownerId: newUser._id,
-    }).exec();
-
-    await sendbirdRequests.createUser({
-      user_id: newRole._id,
-      nickname: newProfile.displayName,
-      profile_url:
-        "https://sendbird.com/main/img/profiles/profile_05_512px.png",
-      issue_access_token: true,
-    });
-    return newUser;
   } catch (error) {
-    if (newRole) {
-      deleteRole(newRole._id);
-    }
-    if (newProfile) {
-      deleteProfile(newProfile._id);
-    }
-    warn(error);
+    console.error(error);
   }
 };

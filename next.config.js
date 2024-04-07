@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "sendbird.com",
       },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
     ],
   },
   typescript: {

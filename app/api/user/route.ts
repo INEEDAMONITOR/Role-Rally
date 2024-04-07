@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { getUserWithProfile } from "@/app/api/_services/user";
+import { getUser } from "@/app/api/_services/user";
 import { handler } from "@/app/api/_middleware/handler";
 import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 const getUserByCookies = async (req: NextRequest) => {
@@ -12,7 +12,7 @@ const getUserByCookies = async (req: NextRequest) => {
       process.env.JWT_SECRET as string
     ) as JwtPayload;
 
-    const user = await getUserWithProfile({ _id: jwtPayload._id }, [
+    const user = await getUser({ _id: jwtPayload._id }, [
       "-password",
     ]);
     return NextResponse.json(user);

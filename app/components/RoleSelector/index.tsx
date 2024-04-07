@@ -4,81 +4,43 @@ import { UserContext } from "@/app/contexts/UserContext";
 import { Role } from "@/app/types";
 import { getByCookies } from "@/app/utils/https";
 import { useContext, useEffect, useState } from "react";
-import { RoleAvatar, UserAvatar } from "@/app/components/Avatar";
-import Button from "@/app/components/Button";
-import { useRouter } from "next/navigation";
+import { Avatar, ListGroup, Tooltip } from "flowbite-react";
+import { Bars } from "@/app/components/Icon";
+import RoleAvatar from "@/app/components/RoleSelector/RoleAvatar";
 
 interface RoleSwitcherProps {
-  selectedRole: Role | null,
+  selectedRoleId?: string,
   onSelectedRole?: (role: Role) => void;
+  onRolesFetching?: () => void;
+  onRolesFetchingSuccess?: (roles: Role[]) => void;
+  onRolesFetchingError?: (error: any) => void;
 }
 
-const AddRole = () => {
-  const router = useRouter();
-
-  const handleCreateRole = () => {
-    router.push("/settings/create-role");
-  };
-
-  return (
-    <Button
-      icon={{
-        img: {
-          src: "/AddIconImage.jpg",
-          alt: "Add Role"
-        },
-        hoverable: false,
-      }}
-      className="opacity-50 hover:opacity-70 hover:bg-black"
-      onClick={handleCreateRole}
-    />
-  );
-};
-
-const More = () => {
-  return (
-    <Button
-      icon={{}}
-      className="px-3"
-    >
-      <div className="flex flex-col items-center text-xs text-gray-300 hover:text-gray-200">
-        <div>
-          <svg
-            className="w-8 h-8"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2"
-              d="M6 12h.01m6 0h.01m5.99 0h.01"
-            />
-          </svg>
-        </div>
-        <div>
-          More
-        </div>
-      </div>
-    </Button>
-  );
-};
-
 export default function RoleSelector(props: RoleSwitcherProps) {
+  const { selectedRoleId, onSelectedRole } = props;
   const { user } = useContext(UserContext);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [currentRole, setCurrentRole] = useState<Role | null>(null);
 
   const handleSelectRole = (role: Role) => {
-    setCurrentRole(role);
-    props.onSelectedRole?.(role);
+    onSelectedRole?.(role);
   };
 
   useEffect(() => {
-    getByCookies("role").then((res) => setRoles(res as Role[]));
+    const fetchRoles = async () => {
+      try {
+        props.onRolesFetching?.();
+
+        const res: Role[] = await getByCookies("role");
+
+        setRoles(res);
+        props.onRolesFetchingSuccess?.(res);
+      } catch (e) {
+        props.onRolesFetchingError?.(e);
+      }
+    };
+
+    fetchRoles();
+
   }, []);
 
   if (!user) {
@@ -88,9 +50,10 @@ export default function RoleSelector(props: RoleSwitcherProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center">
-        <div className="mt-3 border-b border-zinc-700 pb-3 mb-3 mx-auto">
-          <UserAvatar user={user} />
+        <div className="px-3 py-6 mx-auto fixed bg-black z-20">
+          <Avatar placeholderInitials="RR" />
         </div>
+        <div className="w-4 h-24" />
       </div>
 
       <div className="w-full flex-grow flex flex-col justify-between items-center">
@@ -99,15 +62,33 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             <RoleAvatar
               key={role._id}
               role={role}
-              selected={currentRole?._id === role._id}
+              selected={selectedRoleId === role._id}
               onClick={handleSelectRole}
             />
           ))}
-          <More />
         </div>
-        <div className="p-2">
-          <AddRole />
+        <div className="p-2 fixed bg-black bottom-0">
+          <Tooltip
+            content={(
+              // TODO: ListGroup theme adjust
+              <ListGroup className="w-48">
+                <ListGroup.Item href="/settings/create-role">
+                  Add New Role
+                </ListGroup.Item>
+                <ListGroup.Item href="/login?out=1">
+                  Log Out
+                </ListGroup.Item>
+              </ListGroup>
+            )}
+            trigger="click"
+            arrow={false}
+          >
+            <div className="p-2 px-3 rounded-xl hover:bg-zinc-700 cursor-pointer">
+              <Bars />
+            </div>
+          </Tooltip>
         </div>
+        <div className="w-4 h-20" />
       </div>
     </div>
   );

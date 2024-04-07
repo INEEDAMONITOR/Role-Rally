@@ -1,6 +1,6 @@
 import { handler } from "@/app/api/_middleware/handler";
 import { userAuthenticateWithIdMiddleware } from "@/app/api/_middleware/user";
-import { getUserWithProfile } from "@/app/api/_services/user";
+import { getUser } from "@/app/api/_services/user";
 import { NextRequest, NextResponse } from "next/server";
 
 const getUserById = async (
@@ -9,7 +9,8 @@ const getUserById = async (
 ) => {
   try {
     const { id } = params;
-    const user = await getUserWithProfile({ _id: id }, ["-password"]);
+    const user = await getUser({ _id: id }, ["-password"]);
+
     return NextResponse.json(user);
   } catch (e) {
     return NextResponse.json({ message: "Internal error" }, { status: 500 });
