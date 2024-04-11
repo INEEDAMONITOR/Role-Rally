@@ -1,7 +1,7 @@
 import { POST } from "@/app/api/register/route"; 
 import { dbConnect, validateEmail } from "@/app/api/_utils";
 import { createUser } from "@/app/api/_services/user";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 jest.mock("@/app/api/_utils", () => ({
   dbConnect: jest.fn().mockResolvedValue(true),
