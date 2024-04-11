@@ -1,9 +1,7 @@
-
-
-import { POST } from '@/app/api/login/route'; 
-import { NextRequest, NextResponse } from "next/server"
+import { POST } from "@/app/api/login/route";
+import { NextRequest } from "next/server";
 import { validateUser } from "@/app/api/_services/user";
-import jwt from "jsonwebtoken";
+
 jest.mock("@/app/api/_services/user", () => ({
   validateUser: jest.fn().mockResolvedValue(true)
 }));
@@ -31,36 +29,35 @@ function createMockRequest(body: object | Error) {
 }
 
 const loginHandler = async (req: NextRequest) => {
-  const response = await POST(req);
-  return response;
+  return await POST(req);
 };
 
 // Test cases
-describe('/api/login', () => {
-  test('login/emptyReq', async () => {
+describe("/api/login", () => {
+  test("login/emptyReq", async () => {
     const response = await loginHandler(createMockRequest({}));
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ message: "Email can not be undefined" });
   });
 
-  test('login/emptyEmail', async () => {
-    const response = await loginHandler(createMockRequest({password: "testpassword"}));
+  test("login/emptyEmail", async () => {
+    const response = await loginHandler(createMockRequest({ password: "testpassword" }));
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ message: "Email can not be undefined" });
   });
 
-  test('login/emptyPassword', async () => {
-    const response = await loginHandler(createMockRequest({email: "test@qq.com"}));
+  test("login/emptyPassword", async () => {
+    const response = await loginHandler(createMockRequest({ email: "test@qq.com" }));
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ message: "Password can not be undefined" });
   });
-  test('login/successLogin', async () => {
+  test("login/successLogin", async () => {
     const response = await loginHandler(createMockRequest({ email: "test1@qq.com", password: "test" }));
     expect(response.status).toBe(200);
     const responseData = await response.json();
     expect(responseData.token).toBe("mockedToken");
   });
-  test('login/failureLogin', async () => {
+  test("login/failureLogin", async () => {
     // Override the mock for validateUser to return false for this test
     (validateUser as jest.Mock).mockResolvedValue(false);
     const response = await loginHandler(createMockRequest({ email: "user@example.com", password: "wrongpassword" }));
@@ -68,7 +65,7 @@ describe('/api/login', () => {
     const responseData = await response.json();
     expect(responseData).toEqual({ message: "Email or password is incorrect" });
   });
-  test('login/failedToParseJSON', async () => {
+  test("login/failedToParseJSON", async () => {
     const response = await loginHandler(createMockRequest(new Error("Error 1")));
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ message: "Payload body is undefined" }); 

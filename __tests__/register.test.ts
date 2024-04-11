@@ -1,7 +1,7 @@
-import { POST } from '@/app/api/register/route'; 
+import { POST } from "@/app/api/register/route"; 
 import { dbConnect, validateEmail } from "@/app/api/_utils";
 import { createUser } from "@/app/api/_services/user";
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
 
 jest.mock("@/app/api/_utils", () => ({
   dbConnect: jest.fn().mockResolvedValue(true),
@@ -47,51 +47,51 @@ function createMockRequest(body: object | Error) {
     } as unknown as NextRequest;
   }
 }
-describe('POST /api/user', () => {
+describe("POST /api/user", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('returns 400 for invalid name', async () => {
-    const request = createMockRequest({ name: '', email: 'test@example.com', password: 'password' });
+  test("returns 400 for invalid name", async () => {
+    const request = createMockRequest({ name: "", email: "test@example.com", password: "password" });
     const response = await POST(request);
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ message: "Invalid name" });
   });
 
-  test('returns 400 for invalid email', async () => {
+  test("returns 400 for invalid email", async () => {
     setValidateEmail(false); 
-    const request = createMockRequest({ name: 'Test User', email: 'invalid', password: 'password' });
+    const request = createMockRequest({ name: "Test User", email: "invalid", password: "password" });
     const response = await POST(request);
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ message: "Invalid email", error: "Invalid email" });
   });
 
-  test('creates user successfully', async () => {
+  test("creates user successfully", async () => {
     setValidateEmail(true); 
-    setCreateUser({ id: 1, name: 'Test User', email: 'test@example.com' });
-    const request = createMockRequest({ name: 'Test User', email: 'test@example.com', password: 'password' });
+    setCreateUser({ id: 1, name: "Test User", email: "test@example.com" });
+    const request = createMockRequest({ name: "Test User", email: "test@example.com", password: "password" });
     const response = await POST(request);
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       message: "User created successfully",
-      data: { id: 1, name: 'Test User', email: 'test@example.com' }, 
+      data: { id: 1, name: "Test User", email: "test@example.com" }, 
     });
   });
 
-  test('returns 400 if user creation fails', async () => {
+  test("returns 400 if user creation fails", async () => {
     setValidateEmail(true); 
     setCreateUser(null); 
-    const request = createMockRequest({ name: 'Test User', email: 'existing@example.com', password: 'password' });
+    const request = createMockRequest({ name: "Test User", email: "existing@example.com", password: "password" });
     const response = await POST(request);
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ message: "User registration failed. The Email may be existed" });
   });
   
-  test('handles database connection errors', async () => {
+  test("handles database connection errors", async () => {
     setValidateEmail(true); 
     setdbConnect(new Error("Database connection timeout"));
-    const request = createMockRequest({ name: 'Test User', email: 'test@example.com', password: 'password' });
+    const request = createMockRequest({ name: "Test User", email: "test@example.com", password: "password" });
     const response = await POST(request);
     expect(response.status).toBe(500);
     expect(await response.json()).toEqual({ message: "Database connection timeout" });
