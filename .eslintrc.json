@@ -1,6 +1,5 @@
 {
-  "extends": ["eslint:recommended", "plugin:react/recommended", "next/core-web-vitals","plugin:@typescript-eslint/recommended",
-  "plugin:jest/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "next/core-web-vitals"],
   "rules": {
     "semi": 1,
     "quotes": [1, "double"],
@@ -27,18 +26,6 @@
     "react/jsx-curly-spacing": [1, "never"],
     "react-hooks/exhaustive-deps": "off",
     "no-unused-vars": "off"
-  },
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "node": true,
-    "jest/globals": true
-  },
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "jest"
-  ]
+  }
 }
 
