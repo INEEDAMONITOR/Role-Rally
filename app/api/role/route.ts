@@ -6,12 +6,17 @@ import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 
 const getRolesByCookies = async (req: NextRequest) => {
   try {
+    console.log("getRolesByCookies request", req);
+
     const token = req.cookies.get("roleRallyUserToken")?.value as string;
+    console.log("getRolesByCookies token", token);
 
     const jwtPayload = jwt.verify(
       token,
       process.env.JWT_SECRET as string
     ) as JwtPayload;
+
+    console.log("getRolesByCookies jwt payload", jwtPayload);
 
     const roles = await getRolesWithProfile({ ownerId: jwtPayload._id });
     return NextResponse.json(roles);
