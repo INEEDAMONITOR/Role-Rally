@@ -5,11 +5,23 @@ import { dbConnect } from "@/app/api/_utils";
 import { cleanObject } from "@/app/utils";
 import { NextRequest, NextResponse } from "next/server";
 
-type Params = { 
+type Params = {
   ownerId: string | undefined;
-}
+};
 
-const updateProfile = async (req: NextRequest, { params }: { params: Params}) => {
+/**
+ * Updates the profile of a user with the specified ownerId.
+ *
+ * @method
+ * @async
+ * @param req - The NextRequest object representing the incoming request.
+ * @param params - An object containing the route parameters, including the ownerId.
+ * @returns A NextResponse object containing the updated profile.
+ */
+const updateProfile = async (
+  req: NextRequest,
+  { params }: { params: Params }
+) => {
   const { ownerId } = params;
 
   try {
@@ -29,21 +41,12 @@ const updateProfile = async (req: NextRequest, { params }: { params: Params}) =>
     return NextResponse.json({
       profile: profile?.toObject(),
     });
-
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json(
-        { message: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ message: error.message }, { status: 500 });
     }
-    return NextResponse.json(
-      { status: 500 }
-    );
+    return NextResponse.json({ status: 500 });
   }
 };
 
-export const PUT = handler(
-  validateTokenMiddleware,
-  updateProfile
-);
+export const PUT = handler(validateTokenMiddleware, updateProfile);

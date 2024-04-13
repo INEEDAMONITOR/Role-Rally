@@ -16,6 +16,9 @@ interface UserProps extends Omit<IUser, "_id" | "rolesId"> {
 
 /**
  * Validates the user by checking if the provided email and password match the stored user credentials.
+ *
+ * @method
+ * @async
  * @param email - The email of the user.
  * @param password - The password of the user.
  * @returns A boolean indicating whether the user is valid or not.
@@ -37,6 +40,9 @@ export const validateUser = async (email: string, password: string) => {
 export type UserQueryProps = Partial<UserProps> | string | Types.ObjectId;
 /**
  * Retrieves a user based on the provided props and optional selector.
+ *
+ * @method
+ * @async
  * @param props - The properties used to identify the user.
  * @param selector - Optional selector to specify the fields to include or exclude in the user object.
  * @returns A promise that resolves to the user object if found, or null if not found or an error occurred.
@@ -45,6 +51,13 @@ export const getUser = generateFindOneQuery<typeof UserModel, UserQueryProps>(
   UserModel
 );
 
+/**
+ * Deletes a user by their ID.
+ *
+ * @method
+ * @async
+ * @param userId - The ID of the user to delete.
+ */
 export const deleteUser = async (userId: Types.ObjectId) => {
   try {
     const user = (await UserModel.findById(userId).exec()) as IUser;
@@ -61,6 +74,14 @@ export const deleteUser = async (userId: Types.ObjectId) => {
   }
 };
 
+/**
+ * Creates a new user.
+ *
+ * @method
+ * @async
+ * @param user - The user object containing the user's name, email, and password.
+ * @returns A promise that resolves to the created user object.
+ */
 export const createUser = async (user: CreateUserProp) => {
   try {
     return await UserModel.create({

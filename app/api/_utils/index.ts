@@ -21,6 +21,9 @@ if (!cached) {
  * Connects to the database and returns the connection object.
  * If a connection already exists, it returns the existing connection.
  * If a connection does not exist, it creates a new connection and returns it.
+ *
+ * @method
+ * @async
  * @returns {Promise<mongoose.Connection>} The database connection object.
  * @throws {Error} If there is an error connecting to the database.
  */
@@ -52,6 +55,13 @@ async function dbDelete() {
   }
 }
 
+/**
+ * Validates an email address.
+ *
+ * @method
+ * @param email - The email address to validate.
+ * @returns A boolean indicating whether the email address is valid.
+ */
 export function validateEmail(email: string): boolean {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);

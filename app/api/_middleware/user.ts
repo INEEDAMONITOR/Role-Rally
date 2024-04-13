@@ -3,6 +3,14 @@ import jwt from "jsonwebtoken";
 import { getUser } from "@/app/api/_services/user";
 import { CustomMiddleware } from "@/app/api/_middleware/handler";
 
+/**
+ * Authenticates the user based on the provided request.
+ *
+ * @method
+ * @async
+ * @param request - The NextRequest object representing the incoming request.
+ * @returns A Promise that resolves to the authenticated user object, or null if authentication fails.
+ */
 export const userAuthenticate = async (request: NextRequest) => {
   try {
     const token = request.cookies.get("roleRallyUserToken")?.value;
@@ -23,6 +31,16 @@ export const userAuthenticate = async (request: NextRequest) => {
   }
 };
 
+/**
+ * Middleware function to validate a token.
+ *
+ * @method
+ * @async
+ * @param request - The incoming request object.
+ * @param _ - The response object (not used in this middleware).
+ * @param next - The next function to call in the middleware chain.
+ * @returns A NextResponse object with an appropriate JSON response.
+ */
 export const validateTokenMiddleware: CustomMiddleware = async (
   request,
   _,
@@ -48,6 +66,16 @@ export const validateTokenMiddleware: CustomMiddleware = async (
   }
 };
 
+/**
+ * Middleware function to authenticate a user with an ID.
+ *
+ * @method
+ * @async
+ * @param request - The request object.
+ * @param params - The parameters object containing the user ID.
+ * @param next - The next function to be called in the middleware chain.
+ * @returns A NextResponse object with an appropriate JSON response.
+ */
 export const userAuthenticateWithIdMiddleware: CustomMiddleware<{
   params: { id: string };
 }> = async (request, { params }, next) => {

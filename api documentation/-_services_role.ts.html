@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> _services/role.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PUT">PUT</a></li><li><a href="global.html#createProfile">createProfile</a></li><li><a href="global.html#createRole">createRole</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#dbConnect">dbConnect</a></li><li><a href="global.html#deleteProfile">deleteProfile</a></li><li><a href="global.html#deleteRole">deleteRole</a></li><li><a href="global.html#deleteRoleByRoleId">deleteRoleByRoleId</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#generateFindOneQuery">generateFindOneQuery</a></li><li><a href="global.html#generateFindQuery">generateFindQuery</a></li><li><a href="global.html#getRoleByRoleId">getRoleByRoleId</a></li><li><a href="global.html#getRoleWithProfile">getRoleWithProfile</a></li><li><a href="global.html#getRolesByCookies">getRolesByCookies</a></li><li><a href="global.html#getRolesWithProfile">getRolesWithProfile</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserByCookies">getUserByCookies</a></li><li><a href="global.html#handler">handler</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#userAuthenticate">userAuthenticate</a></li><li><a href="global.html#userAuthenticateWithIdMiddleware">userAuthenticateWithIdMiddleware</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateProfileIdWithJWT">validateProfileIdWithJWT</a></li><li><a href="global.html#validateRoleIdWithJWT">validateRoleIdWithJWT</a></li><li><a href="global.html#validateTokenMiddleware">validateTokenMiddleware</a></li><li><a href="global.html#validateUser">validateUser</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>_services/role.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Types } from "mongoose";
+import RoleModel, { IRole } from "@/app/api/_models/Role";
+import ProfileModel, { IProfile } from "@/app/api/_models/Profile";
+import {
+  Selector,
+  generateFindOneQuery,
+  generateFindQuery,
+} from "@/app/api/_services/utils";
+import { deleteProfile, getProfile } from "@/app/api/_services/profile";
+import { dbConnect } from "@/app/api/_utils";
+import UserModel from "@/app/api/_models/User";
+import { Profile } from "@/app/types";
+import { sendbirdRequests } from "@/app/_lib/sendbird";
+
+interface RoleProps extends Omit&lt;IRole, "_id" | "profileId" | "ownerId"> {
+  _id: string | Types.ObjectId;
+  profileId: string | Types.ObjectId;
+  ownerId: string | Types.ObjectId;
+}
+type QueryProps = Partial&lt;RoleProps> | string | Types.ObjectId;
+
+type ProfilePayload = Partial&lt;
+  Pick&lt;
+    Profile,
+    "lastName" | "phone" | "about" | "avatar" | "pronouns" | "ownerRoleId"
+  >
+> &amp;
+  Pick&lt;Profile, "firstName" | "email" | "username">;
+
+/**
+ * Creates a role with the given user ID and profile payload.
+ *
+ * @method
+ * @async
+ * @param userId - The ID of the user.
+ * @param profilePayload - The payload containing profile information.
+ * @returns An object containing the created role and profile.
+ * @throws An error if the profile payload is invalid.
+ */
+export const createRole = async (
+  userId: string | Types.ObjectId,
+  profilePayload: ProfilePayload
+) => {
+  const { firstName, email, username } = profilePayload;
+
+  if (!firstName || !email || !username) {
+    throw new Error("profile payload error");
+  }
+  // TODO: validate profilePayload, like username duplicates
+  await dbConnect();
+
+  const profile: IProfile = await ProfileModel.create(profilePayload);
+
+  const role: IRole = await RoleModel.create&lt;IRole>({
+    profileId: profile._id,
+    ownerId: userId,
+    friends: [],
+    chatRooms: [],
+  });
+
+  await ProfileModel.findByIdAndUpdate(profile._id, {
+    ownerRoleId: role._id,
+  }).exec();
+
+  await sendbirdRequests.createUser({
+    user_id: role._id,
+    nickname: profile.firstName,
+    profile_url:
+      profile.avatar ||
+      "https://sendbird.com/main/img/profiles/profile_05_512px.png",
+    issue_access_token: true,
+  });
+
+  UserModel.findByIdAndUpdate(userId, {
+    $addToSet: { rolesId: { $each: [role._id] } },
+  }).exec();
+
+  return {
+    role,
+    profile,
+  };
+};
+
+export const getRole = generateFindOneQuery&lt;typeof RoleModel, QueryProps>(
+  RoleModel
+);
+
+/**
+ * Retrieves a role with its associated profile.
+ *
+ * @method
+ * @async
+ * @param props - The query props for retrieving the role.
+ * @param selector - The selector for retrieving the role.
+ * @returns A Promise that resolves to the role object with its associated profile, or an empty object if an error occurs.
+ */
+export const getRoleWithProfile = async (
+  props: QueryProps,
+  selector?: Selector
+) => {
+  let role = await getRole(props, selector);
+  try {
+    if (role) {
+      const profile = await getProfile(role.profileId);
+      role = { ...role.toObject(), profile };
+    }
+    return role;
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+};
+
+export const getRoles = generateFindQuery&lt;typeof RoleModel, QueryProps>(
+  RoleModel
+);
+
+/**
+ * Retrieves roles with associated profiles.
+ *
+ * @method
+ * @async
+ * @param props - The query props.
+ * @param selector - The selector.
+ * @returns A promise that resolves to an array of roles with associated profiles.
+ */
+export const getRolesWithProfile = async (
+  props: QueryProps,
+  selector?: Selector
+) => {
+  let roles = (await getRoles(props, selector)) as any[];
+  try {
+    for (let i = 0; i &lt; roles.length; i++) {
+      const profile = await getProfile({ _id: roles[i].profileId });
+      roles[i] = { ...roles[i].toObject(), profile };
+    }
+    return roles;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+/**
+ * Deletes a role and its associated profile.
+ *
+ * @method
+ * @async
+ * @param roleId - The ID of the role to be deleted.
+ * @returns A Promise that resolves when the role and profile are successfully deleted.
+ */
+export const deleteRole = async (roleId: Types.ObjectId | string) => {
+  const role = await getRole(roleId, "-_id profileId");
+  await deleteProfile(role.profileId);
+  RoleModel.findByIdAndDelete(roleId).exec();
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

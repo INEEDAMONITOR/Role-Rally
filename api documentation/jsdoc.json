@@ -1,0 +1,15 @@
+{
+  "source": {
+    "include": ["app/api"],
+    "includePattern": "\\.(jsx|js|ts|tsx)$"
+  },
+  "opts": {
+    "destination": "api documentation",
+    "recurse": true,
+    "template": "node_modules/better-docs"
+  },
+  "plugins": ["node_modules/better-docs/typescript", "plugins/markdown"],
+  "tags": {
+    "allowUnknownTags": ["true"]
+  }
+}

@@ -2,6 +2,12 @@ import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { validateUser } from "@/app/api/_services/user";
 
+/**
+ * Handles the POST request for user login.
+ *
+ * @param req - The request object.
+ * @returns A JSON response with a token if the login is successful, or an error message if the login fails.
+ */
 export async function POST(req: Request) {
   try {
     const payload = await req.json();
@@ -9,10 +15,10 @@ export async function POST(req: Request) {
     if (payload?.email === undefined) {
       return NextResponse.json(
         {
-          message: "Email can not be undefined"
+          message: "Email can not be undefined",
         },
         {
-          status: 401
+          status: 401,
         }
       );
     }
@@ -20,10 +26,10 @@ export async function POST(req: Request) {
     if (payload?.password === undefined) {
       return NextResponse.json(
         {
-          message: "Password can not be undefined"
+          message: "Password can not be undefined",
         },
         {
-          status: 401
+          status: 401,
         }
       );
     }
@@ -33,10 +39,10 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json(
         {
-          message: "Email or password is incorrect"
+          message: "Email or password is incorrect",
         },
         {
-          status: 401
+          status: 401,
         }
       );
     }
@@ -51,16 +57,16 @@ export async function POST(req: Request) {
         token,
       },
       {
-        status: 200
+        status: 200,
       }
     );
   } catch (e) {
     return NextResponse.json(
       {
-        message: "Payload body is undefined"
+        message: "Payload body is undefined",
       },
       {
-        status: 401
+        status: 401,
       }
     );
   }
