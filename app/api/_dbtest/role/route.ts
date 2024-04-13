@@ -8,6 +8,11 @@ interface Params {
   ownerId: string;
 }
 
+/**
+ * Handles the POST request for creating a role.
+ * @param request - The request object containing the ownerId.
+ * @returns A JSON response indicating the success or failure of the operation.
+ */
 export async function POST(request: Request) {
   const { ownerId } = await request.json();
   try {
@@ -32,6 +37,14 @@ export async function POST(request: Request) {
   }
 }
 
+/**
+ * Deletes a role.
+ *
+ * @method
+ * @async
+ * @param request - The request object.
+ * @returns A JSON response indicating the result of the deletion.
+ */
 export const DELETE = async (request: Request) => {
   const { id } = await request.json();
   try {

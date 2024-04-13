@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 /**
  * Handles the HTTP POST request for creating a new user.
  *
+ * @method
+ * @async
  * @param request - The NextApiRequest object representing the incoming request.
  * @param response - The NextApiResponse object representing the outgoing response.
  * @returns A Promise that resolves to void.
@@ -15,10 +17,10 @@ export async function POST(request: Request) {
   if (!name || typeof name !== "string" || name.trim().length === 0) {
     return NextResponse.json(
       {
-        message: "Invalid name"
+        message: "Invalid name",
       },
       {
-        status: 400
+        status: 400,
       }
     );
   }

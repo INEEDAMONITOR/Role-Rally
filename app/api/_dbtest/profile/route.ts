@@ -3,6 +3,14 @@ import { dbConnect } from "@/app/api/_utils";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 
+/**
+ * Deletes a profile.
+ *
+ * @method
+ * @async
+ * @param request - The request object.
+ * @returns A JSON response indicating the result of the deletion.
+ */
 export const DELETE = async (request: Request) => {
   const { id } = await request.json();
   try {

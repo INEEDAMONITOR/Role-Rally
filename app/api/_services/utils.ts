@@ -8,6 +8,7 @@ export type Selector =
 /**
  * Generates a findOne query function for a given model.
  *
+ * @method
  * @template ModelType - The type of the model.
  * @template PropsType - The type of the query properties.
  * @param {ModelType} model - The model to generate the query for.
@@ -45,11 +46,21 @@ export const generateFindOneQuery = <ModelType extends Model<any>, PropsType>(
   return query;
 };
 
+/**
+ * Generates a find query function for a given model.
+ *
+ * @method
+ * @param model The model to generate the find query for.
+ * @returns The generated find query function.
+ */
 export const generateFindQuery = <ModelType extends Model<any>, PropsType>(
   model: ModelType
 ) => {
   /**
    * Executes a database query with the specified properties and optional selector.
+   *
+   * @method
+   * @async
    * @param props The properties to filter the query by.
    * @param selector The optional selector to specify the fields to include in the query results.
    * @returns A promise that resolves to the query results, or null if an error occurs.

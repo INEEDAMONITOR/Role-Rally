@@ -55,6 +55,12 @@ export async function POST(request: Request) {
 }
 
 // Get 10 users
+/**
+ * Retrieves a list of users from the database.
+ *
+ * @param request - The request object.
+ * @returns A JSON response containing the list of users.
+ */
 export async function GET(request: Request) {
   try {
     await dbConnect();
@@ -69,6 +75,12 @@ export async function GET(request: Request) {
   }
 }
 
+/**
+ * Deletes a user from the database.
+ *
+ * @param request - The HTTP request object.
+ * @returns A JSON response indicating the result of the operation.
+ */
 export async function DELETE(request: Request) {
   const { userId } = await request.json();
   try {
@@ -84,6 +96,12 @@ export async function DELETE(request: Request) {
   }
 }
 
+/**
+ * Updates a user profile by deleting the profile with the specified ID.
+ *
+ * @param request - The request object containing the user ID.
+ * @returns A response object with a status code of 200.
+ */
 export async function PUT(request: Request) {
   const { id } = await request.json();
   deleteProfile(id);
