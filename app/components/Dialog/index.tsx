@@ -14,8 +14,8 @@ export default function Dialog(props: Props) {
   };
 
   return (
-    <div className={`${props.isVisible ? "" : "hidden"} overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full`}>
-      <div className="relative p-4 w-full max-w-md max-h-full border border-zinc-700 rounded-2xl">
+    <div className={`${props.isVisible ? "" : "hidden"} overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm`}>
+      <div className="relative p-4 w-full max-w-md max-h-full border border-zinc-600 rounded-2xl bg-black shadow-lg">
         <div className="relative rounded-lg shadow">
           <div className={`flex items-center justify-between ${props.header && "p-4 border-b rounded-t border-gray-600"} `}>
             {props.header && (

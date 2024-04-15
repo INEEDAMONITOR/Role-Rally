@@ -1,12 +1,14 @@
 "use client";
 
 import { UserContext } from "@/app/contexts/UserContext";
-import { Role } from "@/app/types";
+import { Profile, Role } from "@/app/types";
 import { getByCookies } from "@/app/utils/https";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Avatar, ListGroup, Tooltip } from "flowbite-react";
 import { Bars } from "@/app/components/Icon";
-import RoleAvatar from "@/app/components/RoleSelector/RoleAvatar";
+import ProfileCard from "@/app/components/ProfileCard";
+import Dialog from "@/app/components/Dialog";
+import { ProfileForm } from "@/app/components/Form";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
@@ -20,28 +22,43 @@ export default function RoleSelector(props: RoleSwitcherProps) {
   const { selectedRoleId, onSelectedRole } = props;
   const { user } = useContext(UserContext);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [currentEditProfile, setCurrentEditProfile] = useState<Profile>();
+  const [isEditProfileVisible, setEditProfileVisible] = useState(false);
+
+  const handleFetchRoles = useCallback(async () => {
+    try {
+      props.onRolesFetching?.();
+
+      const res: Role[] = await getByCookies("role");
+
+      setRoles(res);
+      props.onRolesFetchingSuccess?.(res);
+    } catch (e) {
+      props.onRolesFetchingError?.(e);
+    }
+  }, []);
 
   const handleSelectRole = (role: Role) => {
     onSelectedRole?.(role);
   };
 
+  const handleEditProfile = async (profile: Profile) => {
+    const res = await fetch(`/api/role/${profile.ownerRoleId}`);
+    const data = await res.json();
+
+    setCurrentEditProfile(data?.data?.profile ? data.data.profile : undefined);
+    setEditProfileVisible(true);
+  };
+
+  const handleEditProfileClose = () => {
+    setEditProfileVisible(false);
+    setCurrentEditProfile(undefined);
+    handleFetchRoles();
+  };
+
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        props.onRolesFetching?.();
-
-        const res: Role[] = await getByCookies("role");
-
-        setRoles(res);
-        props.onRolesFetchingSuccess?.(res);
-      } catch (e) {
-        props.onRolesFetchingError?.(e);
-      }
-    };
-
-    fetchRoles();
-
-  }, []);
+    handleFetchRoles();
+  }, [handleFetchRoles]);
 
   if (!user) {
     return null;
@@ -59,20 +76,44 @@ export default function RoleSelector(props: RoleSwitcherProps) {
       <div className="w-full flex-grow flex flex-col justify-between items-center">
         <div className="flex flex-col items-center space-y-2">
           {roles.map((role) => (
-            <RoleAvatar
+            <Tooltip
               key={role._id}
-              role={role}
-              selected={selectedRoleId === role._id}
-              onClick={handleSelectRole}
-            />
+              className="bg-black border border-zinc-600"
+              animation={false}
+              content={
+                <ProfileCard
+                  data={role.profile} 
+                  onClickEdit={handleEditProfile}
+                />
+              }
+              placement="right"
+              arrow={false}
+            >
+              <Avatar
+                className={`cursor-pointer p-3 rounded-2xl ${selectedRoleId === role._id ? "bg-purple-600" :"hover:bg-zinc-700"}`}
+                rounded
+                img={role.profile?.avatar}
+                onClick={() => handleSelectRole(role)}
+              />
+            </Tooltip>
           ))}
+          <Dialog
+            header="Edit Proifle"
+            isVisible={isEditProfileVisible}
+            onClickClose={handleEditProfileClose}
+          >
+            <ProfileForm
+              defaultValues={currentEditProfile}
+              onSubmit={handleEditProfileClose}
+            />
+          </Dialog>
         </div>
         <div className="p-2 fixed bg-black bottom-0">
           <Tooltip
             content={(
               // TODO: ListGroup theme adjust
               <ListGroup className="w-48">
-                <ListGroup.Item href="/settings/create-role">
+                <ListGroup.Item href="/role/create">
                   Add New Role
                 </ListGroup.Item>
                 <ListGroup.Item href="/login?out=1">

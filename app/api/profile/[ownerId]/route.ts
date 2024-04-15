@@ -31,13 +31,13 @@ const updateProfile = async (
 
     await dbConnect();
     const profile = await ProfileModel.findOneAndUpdate(
-      { ownerId },
+      { ownerRoleId: ownerId },
       cleanObject(body),
       {
         new: true,
       }
     ).exec();
-
+    
     return NextResponse.json({
       profile: profile?.toObject(),
     });

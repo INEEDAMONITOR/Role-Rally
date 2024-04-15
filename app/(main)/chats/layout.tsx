@@ -45,7 +45,7 @@ export default function ChatsLayout({
     setRolesLoading(false);
 
     if (res.length === 0) {
-      router.replace("/settings/create-role?new=1");
+      router.replace("/role/create?new=1");
     }
   };
 
