@@ -32,7 +32,7 @@ const updateProfile = async (
     await dbConnect();
     const profile = await ProfileModel.findOneAndUpdate(
       { ownerRoleId: ownerId },
-      cleanObject(body),
+      body,
       {
         new: true,
       }

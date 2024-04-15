@@ -20,8 +20,8 @@ export default function CreateRole() {
           To create a new Role, fill out the form.
         </h2>
       </div>
-      <div className="border border-zinc-700 rounded-2xl p-8 max-w-xl">
-        <ProfileForm onSubmit={handleSubmitProfile} />
+      <div className="border border-zinc-700 rounded-2xl p-8 w-full max-w-2xl">
+        <ProfileForm onClose={handleSubmitProfile} />
       </div>
     </div>
   );

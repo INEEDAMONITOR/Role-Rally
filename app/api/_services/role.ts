@@ -22,7 +22,7 @@ type QueryProps = Partial<RoleProps> | string | Types.ObjectId;
 type ProfilePayload = Partial<
   Pick<
     Profile,
-    "lastName" | "phone" | "about" | "avatar" | "pronouns" | "ownerRoleId"
+    "lastName" | "phone" | "about" | "avatar" | "pronouns" | "website" | "ownerRoleId"
   >
 > &
   Pick<Profile, "firstName" | "email" | "username">;

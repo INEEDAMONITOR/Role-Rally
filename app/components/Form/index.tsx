@@ -10,6 +10,7 @@ import ImageUploader from "../ImageUploader";
 import { Profile } from "@/app/types";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
+import { FormInput, FormSelect } from "@/app/components/Form/Input";
 
 type ProfileFormProps = {
   // if defaultValues prop is passed, then it's an editing action
@@ -22,7 +23,17 @@ type ProfileFormInputs = {
   lastName: string;
   username: string;
   email: string;
+  about: string;
+  pronouns: string;
+  website: string;
 }
+
+const PRONOUNS = [
+  { value: "", label: "Don't specify" },
+  { value: "they/them", label: "they/them" },
+  { value: "she/her", label: "she/her" },
+  { value: "he/him", label: "he/him" },
+];
 
 export const ProfileForm = (props: ProfileFormProps) => {
   const { user } = useContext(UserContext);
@@ -77,8 +88,10 @@ export const ProfileForm = (props: ProfileFormProps) => {
       setDeleting(false);
     }
   };
-    
   const onSubmit: SubmitHandler<ProfileFormInputs> = async (data) => {
+    console.log(data);
+    
+
     if (!user?._id) {
       throw new Error("User Id does not exists");
     }
@@ -94,7 +107,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
           },
           body: JSON.stringify({
             ...data,
-            avatar: imgUrl ?? "",
+            avatar: !imgUrl ? props.defaultValues.avatar : imgUrl,
           })
         });
         toast.success("Profile updated successfully!");
@@ -119,34 +132,24 @@ export const ProfileForm = (props: ProfileFormProps) => {
 
   return (
     <form
-      className="space-y-5"
+      className="space-y-5 text-gray-200"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex justify-between space-x-4">
         <div className="flex-grow space-y-5">
-          <div>
-            <label className="block text-sm font-medium leading-6 text-gray-200">
-              First Name
-            </label>
-            <input
-              {...register("firstName", {
-                required: true,
-                pattern: /^[A-Za-z]+$/i,
-              })}
-              className="mt-2 block w-full rounded-md border-0 py-1.5 ps-2 text-gray-200 shadow-sm ring-1 ring-inset ring-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-800"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium leading-6 text-gray-200">
-              Last Name
-            </label>
-            <input
-              {...register("lastName", {
-                pattern: /^[A-Za-z]+$/i,
-              })}
-              className="mt-2 block w-full rounded-md border-0 py-1.5 ps-2 text-gray-200 shadow-sm ring-1 ring-inset ring-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-800"
-            />
-          </div>
+          <FormInput
+            label="First Name"
+            register={register("firstName", {
+              required: true,
+              pattern: /^[A-Za-z]+$/i,
+            })}
+          />
+          <FormInput
+            label="Last Name"
+            register={register("lastName", {
+              pattern: /^[A-Za-z]+$/i,
+            })}
+          />
         </div>
         <ImageUploader
           defaultValue={props?.defaultValues?.avatar}
@@ -154,34 +157,57 @@ export const ProfileForm = (props: ProfileFormProps) => {
         />
       </div>
 
-      <div className="text-gray-200">
-        <label className="block text-sm font-medium leading-6">
-          Username
-        </label>
-        {props.defaultValues ?
+      {props.defaultValues ?
+        <div>
+          <label className="block text-sm font-medium leading-6">
+            Username
+          </label>
           <div className="text-gray-300 text-sm pt-1.5">
             {`@${props.defaultValues.username}`}
-          </div> :
-          <input
-            {...register("username", {
-              required: true,
-            })}
-            className="mt-2 block w-full rounded-md border-0 py-1.5 ps-2 text-gray-200 shadow-sm ring-1 ring-inset ring-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-800"
-          />}
-      </div>
+          </div>
+        </div> :
+        <FormInput
+          label="Username"
+          placeholder="Your unique ID"
+          register={register("username", {
+            required: true,
+          })}
+        />}
 
       <div>
-        <label className="block text-sm font-medium leading-6 text-gray-200">
-          Email
+        <label className="block text-sm font-medium leading-6">
+          Bio
         </label>
-        <input
-          {...register("email", {
-            required: true,
-            pattern: /^\S+@\S+$/i,
-          })}
-          className="mt-2 block w-full rounded-md border-0 py-1.5 ps-2 text-gray-200 shadow-sm ring-1 ring-inset ring-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-800"
+        <textarea
+          {...register("about")}
+          rows={4}
+          placeholder="Tell us about yourself"
+          className="mt-2 block w-full rounded-md border-0 py-1.5 ps-2 shadow-sm ring-1 ring-inset ring-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-800"
         />
       </div>
+
+      <FormSelect
+        label="Pronouns"
+        register={register("pronouns")}
+        options={PRONOUNS}
+      /> 
+
+      <FormInput
+        label="Email"
+        placeholder="example@mail.com"
+        register={register("email", {
+          required: true,
+          pattern: /^\S+@\S+$/i,
+        })}
+      />
+
+      <FormInput
+        label="Website"
+        placeholder="https://www.webpage.com"
+        register={register("website", {
+          pattern: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+        })}
+      />
 
       <div className={`flex ${props.defaultValues ? "justify-between" : "justify-end"}`}>
         {props.defaultValues && 
