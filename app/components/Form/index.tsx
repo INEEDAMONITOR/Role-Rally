@@ -8,11 +8,13 @@ import toast from "react-hot-toast";
 import { ArrowRight } from "../Icon";
 import ImageUploader from "../ImageUploader";
 import { Profile } from "@/app/types";
+import Dialog from "@/app/components/Dialog";
+import ProfileCard from "@/app/components/ProfileCard";
 
 type ProfileFormProps = {
   // if defaultValues prop is passed, then it's an editing action
   defaultValues?: Profile;
-  onSubmit?: () => void;
+  onClose?: () => void;
 }
 
 type ProfileFormInputs = {
@@ -26,6 +28,8 @@ export const ProfileForm = (props: ProfileFormProps) => {
   const { user } = useContext(UserContext);
   const [imgUrl, setImgUrl] = useState<string>();
   const [isSubmitLoading, setSubmitLoading] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const {
     register,
     handleSubmit,
@@ -35,6 +39,43 @@ export const ProfileForm = (props: ProfileFormProps) => {
   
   const handleImgUploadComplete = (url: string) => {
     setImgUrl(url);
+  };
+
+  const handleDeleteRoleConfirm = () => {
+    setDeleteConfirmVisible(true);
+  };
+
+  const handleCloseRoleDeleteConfirm = () => {
+    setDeleteConfirmVisible(false);
+  };
+
+  const handleDeleteRole = async () => {
+    if (!props.defaultValues?.ownerRoleId) {
+      throw new Error("ownerRoleId cannot be undefined");
+    }
+
+    try {
+      setDeleting(true);
+      
+      const res = await fetch(`/api/role/${props.defaultValues.ownerRoleId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({})
+      });
+
+      const data = await res.json();
+
+      if (data.result) {
+        toast.success(data.message);
+        props.onClose?.();
+      } else {
+        toast.error(data.message);
+      }
+    } finally {
+      setDeleting(false);
+    }
   };
     
   const onSubmit: SubmitHandler<ProfileFormInputs> = async (data) => {
@@ -72,7 +113,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
       }
     } finally {
       setSubmitLoading(false);
-      props.onSubmit?.();
+      props.onClose?.();
     }
   };
 
@@ -142,7 +183,50 @@ export const ProfileForm = (props: ProfileFormProps) => {
         />
       </div>
 
-      <div className="flex justify-end">
+      <div className={`flex ${props.defaultValues ? "justify-between" : "justify-end"}`}>
+        {props.defaultValues && 
+          <div className="self-center">
+            <div
+              className="text-red-600 hover:underline cursor-pointer text-sm"
+              onClick={handleDeleteRoleConfirm}
+            >
+              Delete this role
+            </div>
+            <Dialog
+              header="Confirm Deletion"
+              dismissible
+              isVisible={isDeleteConfirmVisible}
+              onClickClose={handleCloseRoleDeleteConfirm}
+            >
+              <div className="text-gray-200 space-y-2">
+                <p>
+                  You are about to delete this role:
+                  <div className="bg-zinc-900 border border-zinc-600 rounded-xl p-4 my-4 text-white">
+                    <ProfileCard data={props.defaultValues} />
+                  </div>
+                </p>
+                <p>
+                  Once you delete your role, there is no going back. Please be certain.
+                </p>
+                <div className="pt-4 flex justify-end space-x-4">
+                  <div
+                    className="text-sm self-center cursor-pointer hover:underline"
+                    onClick={handleCloseRoleDeleteConfirm}
+                  >
+                    Cancel
+                  </div>
+                  <Button
+                    color="failure"
+                    disabled={isDeleting}
+                    onClick={handleDeleteRole}
+                  >
+                    I understand
+                  </Button>
+                </div>
+              </div>
+            </Dialog>
+          </div>
+        }
         <Button
           type="submit"
           color="purple"

@@ -104,7 +104,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
           >
             <ProfileForm
               defaultValues={currentEditProfile}
-              onSubmit={handleEditProfileClose}
+              onClose={handleEditProfileClose}
             />
           </Dialog>
         </div>
