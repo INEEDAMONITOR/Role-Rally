@@ -74,12 +74,12 @@ export default function RoleSelector(props: RoleSwitcherProps) {
     handleFetchRoles();
   }, [handleFetchRoles]);
 
-  if (!user) {
+  if (!user || roles.length === 0) {
     return null;
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full border-e border-zinc-800 px-1">
       <div className="flex flex-col items-center">
         <div className="px-3 py-6 mx-auto fixed bg-black z-20">
           <Avatar placeholderInitials="RR" />
@@ -96,7 +96,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
               animation={false}
               content={
                 <ProfileCard
-                  data={role.profile} 
+                  data={role.profile}
                   onClickEdit={handleEditProfile}
                 />
               }
