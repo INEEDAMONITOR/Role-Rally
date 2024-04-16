@@ -50,7 +50,7 @@ export default function ProfileCard(props: Props) {
           </div>
         )}
       </div>
-      <div className="flex flex-col mt-6 space-y-1">
+      <div className="flex flex-col mt-4 space-y-2">
         {data.about && (
           <div className="font-normal text-gray-200">
             {`${data.about}`}

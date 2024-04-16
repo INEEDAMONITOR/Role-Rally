@@ -21,7 +21,7 @@ export default function CreateRole() {
         </h2>
       </div>
       <div className="border border-zinc-700 rounded-2xl p-8 w-full max-w-2xl">
-        <ProfileForm onClose={handleSubmitProfile} />
+        <ProfileForm onSubmit={handleSubmitProfile} />
       </div>
     </div>
   );
