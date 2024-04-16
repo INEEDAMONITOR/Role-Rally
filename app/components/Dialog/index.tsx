@@ -22,7 +22,7 @@ export default function Dialog(props: Props) {
 
   return (
     <div
-      className={`${props.isVisible ? "" : "hidden"} overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm`}
+      className={`${props.isVisible ? "visible" : "invisible"} overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm`}
       onClick={handleBackdropClick}
     >
       <div className="relative p-4 w-full max-w-xl max-h-full border border-zinc-600 rounded-2xl bg-black shadow-lg overflow-y-auto">

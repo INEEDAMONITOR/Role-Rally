@@ -30,6 +30,7 @@ const ChannelListItem = (props:
       <div className="flex space-x-6 items-center">
         <div>
           <Image
+            priority
             className="rounded-full"
             src={props.coverUrl}
             alt={props.name}

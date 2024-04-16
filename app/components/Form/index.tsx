@@ -204,9 +204,9 @@ export const ProfileForm = (props: ProfileFormProps) => {
 
       <FormInput
         label="Website"
-        placeholder="https://www.webpage.com"
+        placeholder="https://website.com"
         register={register("website", {
-          pattern: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+          pattern: /^(https:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
         })}
       />
 

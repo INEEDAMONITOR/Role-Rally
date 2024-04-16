@@ -111,17 +111,6 @@ export default function RoleSelector(props: RoleSwitcherProps) {
               />
             </Tooltip>
           ))}
-          <Dialog
-            header="Edit Proifle"
-            isVisible={isEditProfileVisible}
-            onClickClose={() => handleEditProfileClose(false)}
-          >
-            <ProfileForm
-              defaultValues={currentEditProfile}
-              onSubmit={() => handleEditProfileClose(true)}
-              onDelete={handleDeleteProfile}
-            />
-          </Dialog>
         </div>
         <div className="p-2 fixed bg-black bottom-0">
           <Tooltip
@@ -145,6 +134,17 @@ export default function RoleSelector(props: RoleSwitcherProps) {
           </Tooltip>
         </div>
         <div className="w-4 h-20" />
+        <Dialog
+          header="Edit Proifle"
+          isVisible={isEditProfileVisible}
+          onClickClose={() => handleEditProfileClose(false)}
+        >
+          <ProfileForm
+            defaultValues={currentEditProfile}
+            onSubmit={() => handleEditProfileClose(true)}
+            onDelete={handleDeleteProfile}
+          />
+        </Dialog>
       </div>
     </div>
   );
