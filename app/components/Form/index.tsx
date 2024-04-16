@@ -11,11 +11,13 @@ import { Profile } from "@/app/types";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
 import { FormInput, FormSelect } from "@/app/components/Form/Input";
+import { useRouter } from "next/navigation";
 
 type ProfileFormProps = {
   // if defaultValues prop is passed, then it's an editing action
   defaultValues?: Profile;
-  onClose?: () => void;
+  onDelete?: (profile: Profile) => void;
+  onSubmit?: () => void;
 }
 
 type ProfileFormInputs = {
@@ -47,6 +49,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
   } = useForm<ProfileFormInputs>({
     values: props.defaultValues,
   });
+  const router = useRouter();
   
   const handleImgUploadComplete = (url: string) => {
     setImgUrl(url);
@@ -80,7 +83,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
 
       if (data.result) {
         toast.success(data.message);
-        props.onClose?.();
+        props.onDelete?.(props.defaultValues);
       } else {
         toast.error(data.message);
       }
@@ -89,9 +92,6 @@ export const ProfileForm = (props: ProfileFormProps) => {
     }
   };
   const onSubmit: SubmitHandler<ProfileFormInputs> = async (data) => {
-    console.log(data);
-    
-
     if (!user?._id) {
       throw new Error("User Id does not exists");
     }
@@ -123,10 +123,11 @@ export const ProfileForm = (props: ProfileFormProps) => {
           })
         });
         toast.success("Role created successfully!");
+        router.replace("/chats");
       }
+      props.onSubmit?.();
     } finally {
       setSubmitLoading(false);
-      props.onClose?.();
     }
   };
 

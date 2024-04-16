@@ -12,7 +12,7 @@ import { ProfileForm } from "@/app/components/Form";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
-  onSelectedRole?: (role: Role) => void;
+  onSelectedRole?: (role?: Role) => void;
   onRolesFetching?: () => void;
   onRolesFetchingSuccess?: (roles: Role[]) => void;
   onRolesFetchingError?: (error: any) => void;
@@ -50,8 +50,22 @@ export default function RoleSelector(props: RoleSwitcherProps) {
     setEditProfileVisible(true);
   };
 
-  const handleEditProfileClose = () => {
+  const handleEditProfileClose = (refresh: boolean) => {
     setEditProfileVisible(false);
+    setCurrentEditProfile(undefined);
+
+    if (refresh) {
+      handleFetchRoles();
+    }
+  };
+
+  const handleDeleteProfile = (profile: Profile) => {
+    setEditProfileVisible(false);
+    
+    if (localStorage.getItem("roleId") === profile.ownerRoleId.toString()) {
+      onSelectedRole?.(undefined);
+    }
+
     setCurrentEditProfile(undefined);
     handleFetchRoles();
   };
@@ -100,11 +114,12 @@ export default function RoleSelector(props: RoleSwitcherProps) {
           <Dialog
             header="Edit Proifle"
             isVisible={isEditProfileVisible}
-            onClickClose={handleEditProfileClose}
+            onClickClose={() => handleEditProfileClose(false)}
           >
             <ProfileForm
               defaultValues={currentEditProfile}
-              onClose={handleEditProfileClose}
+              onSubmit={() => handleEditProfileClose(true)}
+              onDelete={handleDeleteProfile}
             />
           </Dialog>
         </div>

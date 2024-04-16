@@ -30,7 +30,14 @@ export default function ChatsLayout({
   };
 
 
-  const handleSelectRole = async (role: Role) => {
+  const handleSelectRole = async (role?: Role) => {
+    if (!role) {
+      localStorage.clear();
+      setCurrentRoleId(undefined);
+      setAccessToken(undefined);
+
+      return;
+    }
     const roleId = role._id;
     const token = await fetchAccessToken(roleId);
     localStorage.setItem("roleId", roleId);
