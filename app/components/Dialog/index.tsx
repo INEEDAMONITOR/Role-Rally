@@ -4,18 +4,28 @@ interface Props {
   children: ReactNode;
   header?: ReactNode;
   isVisible: boolean;
-  onClickClose: (v: boolean) => void;
+  dismissible?: boolean;
+  onClickClose: () => void;
 }
 
 export default function Dialog(props: Props) {
 
   const handleClose = () => {
-    props.onClickClose(false);
+    props.onClickClose();
+  };
+
+  const handleBackdropClick = () => {
+    if (props.dismissible) {
+      handleClose();
+    }
   };
 
   return (
-    <div className={`${props.isVisible ? "" : "hidden"} overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full`}>
-      <div className="relative p-4 w-full max-w-md max-h-full border border-zinc-700 rounded-2xl">
+    <div
+      className={`${props.isVisible ? "visible" : "invisible"} overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm`}
+      onClick={handleBackdropClick}
+    >
+      <div className="relative p-4 w-full max-w-xl max-h-full border border-zinc-600 rounded-2xl bg-black shadow-lg overflow-y-auto">
         <div className="relative rounded-lg shadow">
           <div className={`flex items-center justify-between ${props.header && "p-4 border-b rounded-t border-gray-600"} `}>
             {props.header && (
@@ -23,8 +33,8 @@ export default function Dialog(props: Props) {
                 {props.header}
               </h3>
             )}
-            <button
-              className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            <div
+              className="cursor-pointer end-2.5 text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
               onClick={handleClose}
             >
               <svg
@@ -41,10 +51,7 @@ export default function Dialog(props: Props) {
                   d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                 />
               </svg>
-              <span className="sr-only">
-                Close modal
-              </span>
-            </button>
+            </div>
           </div>
           <div className="p-4 md:p-5">
             {props.children}

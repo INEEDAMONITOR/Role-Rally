@@ -2,8 +2,8 @@ import { handler } from "@/app/api/_middleware/handler";
 import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 import ProfileModel from "@/app/api/_models/Profile";
 import { dbConnect } from "@/app/api/_utils";
-import { cleanObject } from "@/app/utils";
 import { NextRequest, NextResponse } from "next/server";
+import { sendbirdRequests } from "@/app/_lib/sendbird";
 
 type Params = {
   ownerId: string | undefined;
@@ -31,13 +31,19 @@ const updateProfile = async (
 
     await dbConnect();
     const profile = await ProfileModel.findOneAndUpdate(
-      { ownerId },
-      cleanObject(body),
+      { ownerRoleId: ownerId },
+      body,
       {
         new: true,
       }
     ).exec();
 
+    await sendbirdRequests.updateUser({
+      user_id: profile.ownerRoleId,
+      nickname: profile.firstName,
+      profile_url: profile.avatar,
+    });
+    
     return NextResponse.json({
       profile: profile?.toObject(),
     });

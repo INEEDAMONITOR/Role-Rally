@@ -59,6 +59,7 @@ class Profile {
     about: string
     pronouns: string
     username: string
+    website: string
 }
 class ProfileSetting{
   +changeName(string);

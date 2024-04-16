@@ -22,7 +22,7 @@ type QueryProps = Partial<RoleProps> | string | Types.ObjectId;
 type ProfilePayload = Partial<
   Pick<
     Profile,
-    "lastName" | "phone" | "about" | "avatar" | "pronouns" | "ownerRoleId"
+    "lastName" | "phone" | "about" | "avatar" | "pronouns" | "website" | "ownerRoleId"
   >
 > &
   Pick<Profile, "firstName" | "email" | "username">;
@@ -63,7 +63,7 @@ export const createRole = async (
   }).exec();
 
   await sendbirdRequests.createUser({
-    user_id: role._id,
+    user_id: role._id.toString(),
     nickname: profile.firstName,
     profile_url:
       profile.avatar ||
@@ -153,4 +153,6 @@ export const deleteRole = async (roleId: Types.ObjectId | string) => {
   const role = await getRole(roleId, "-_id profileId");
   await deleteProfile(role.profileId);
   RoleModel.findByIdAndDelete(roleId).exec();
+  
+  await sendbirdRequests.deleteUser(roleId.toString());
 };
