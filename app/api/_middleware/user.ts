@@ -47,6 +47,8 @@ export const validateTokenMiddleware: CustomMiddleware = async (
   next
 ) => {
   try {
+    console.log("validateTokenMiddleware request", request);
+
     const token = request.cookies.get("roleRallyUserToken")?.value;
     if (!token) {
       return NextResponse.json(
@@ -62,6 +64,7 @@ export const validateTokenMiddleware: CustomMiddleware = async (
 
     next?.();
   } catch (e) {
+    console.log(e);
     return NextResponse.json({ message: "Internal error" }, { status: 500 });
   }
 };

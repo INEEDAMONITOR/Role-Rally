@@ -26,5 +26,17 @@
     "react/jsx-curly-spacing": [1, "never"],
     "react-hooks/exhaustive-deps": "off",
     "no-unused-vars": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
+
