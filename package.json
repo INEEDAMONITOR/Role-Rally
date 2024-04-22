@@ -12,7 +12,7 @@
     "lint": "next lint",
     "prepare": "husky install",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
     "docs": "jsdoc -c 'api documentation/jsdoc.json'"
   },
   "dependencies": {
