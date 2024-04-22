@@ -10,6 +10,14 @@ export async function POST(req: Request) {
   await sendbirdRequests.createUser(req);
 }
 
+/**
+ * Deletes a user based on the provided user ID.
+ *
+ * @method
+ * @async
+ * @param request - The HTTP request object.
+ * @returns A JSON response indicating the result of the deletion operation.
+ */
 export async function DELETE(request: Request) {
   const { userId } = await request.json();
   try {
@@ -25,6 +33,14 @@ export async function DELETE(request: Request) {
   }
 }
 
+/**
+ * Updates a user profile based on the provided request.
+ *
+ * @method
+ * @async
+ * @param {Request} request - The request object containing the user profile data.
+ * @returns {Promise<Response>} - A promise that resolves to a Response object with a status of 200.
+ */
 export async function PUT(request: Request) {
   const { id } = await request.json();
   deleteProfile(id);

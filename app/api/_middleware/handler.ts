@@ -8,6 +8,16 @@ export type CustomMiddleware<Params = {}> = (
   next?: NextFunction
 ) => Promise<NextResponse | void>;
 
+/**
+ * Executes a chain of middlewares and returns the result.
+ *
+ * @method
+ * @async
+ * @template Params The type of the parameters passed to the middlewares.
+ * @param {...CustomMiddleware<Params>} middlewares The middlewares to be executed.
+ * @returns {Promise<NextResponse>} A promise that resolves with the result of the middleware chain.
+ * @throws {Error} Throws an error if the handler or middleware does not return a NextResponse.
+ */
 export const handler =
   <Params>(...middlewares: CustomMiddleware<Params>[]) =>
   async (request: NextRequest, params: Params) => {

@@ -30,7 +30,14 @@ export default function ChatsLayout({
   };
 
 
-  const handleSelectRole = async (role: Role) => {
+  const handleSelectRole = async (role?: Role) => {
+    if (!role) {
+      localStorage.clear();
+      setCurrentRoleId(undefined);
+      setAccessToken(undefined);
+
+      return;
+    }
     const roleId = role._id;
     const token = await fetchAccessToken(roleId);
     localStorage.setItem("roleId", roleId);
@@ -45,7 +52,7 @@ export default function ChatsLayout({
     setRolesLoading(false);
 
     if (res.length === 0) {
-      router.replace("/settings/create-role?new=1");
+      router.replace("/role/create?new=1");
     }
   };
 
@@ -69,7 +76,7 @@ export default function ChatsLayout({
 
   return (
     <div className="flex">
-      <div className="flex-shrink-0 border-e border-zinc-800 px-1 h-screen overflow-y-scroll no-scrollbar">
+      <div className="flex-shrink-0 h-screen overflow-y-scroll no-scrollbar">
         <RoleSelector
           selectedRoleId={currentRoleId}
           onSelectedRole={handleSelectRole}
@@ -93,12 +100,12 @@ export default function ChatsLayout({
         ): (
           <div className="flex justify-center text-center items-center h-screen">
             <div className="text-2xl text-gray-500">
-              {isRolesLoading ? (
+              {isRolesLoading &&
                 <Spinner
                   color="purple"
                   size="xl"
                 />
-              ) : "Choose one role on the left"}
+              }
             </div>
           </div>
         )}

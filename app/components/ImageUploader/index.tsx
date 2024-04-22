@@ -2,15 +2,16 @@ import { useDropzone } from "@uploadthing/react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
 import { useUploadThing } from "@/app/_lib/uploadthing";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Avatar, Spinner } from "flowbite-react";
 
 interface Props {
+  defaultValue?: string;
   onClientUploadComplete?: (url: string) => void;
 }
 
 export default function ImageUploader(props: Props) {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | undefined>(props.defaultValue);
   const [loading, setLoading] = useState(false);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setLoading(true);
@@ -29,7 +30,7 @@ export default function ImageUploader(props: Props) {
       },
       onUploadError: () => {
         console.error("error occurred while uploading");
-        setLoading(true);
+        setLoading(false);
       },
       onUploadBegin: () => {
         console.log("upload begins");
@@ -46,6 +47,10 @@ export default function ImageUploader(props: Props) {
     onDrop,
     accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
   });
+
+  useEffect(() => {
+    setImage(props.defaultValue);
+  }, [props.defaultValue]);
 
   return (
     <div {...getRootProps()}>

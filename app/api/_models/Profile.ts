@@ -16,6 +16,7 @@ export interface IProfile {
   about: string;
   pronouns: string;
   username: string;
+  website: string;
 }
 
 const PhoneSchema = new mongoose.Schema<Phone>({
@@ -35,6 +36,7 @@ export const ProfileSchema = new mongoose.Schema<IProfile>({
   about: String,
   pronouns: String,
   username: String,
+  website: String,
 });
 
 export default mongoose.models.Profile ||

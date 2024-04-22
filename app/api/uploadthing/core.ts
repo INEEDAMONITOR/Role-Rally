@@ -15,7 +15,7 @@ export const ourFileRouter = {
         userId: user._id,
       };
     })
-    .onUploadComplete(async (res) => {
+    .onUploadComplete(async res => {
       return { url: res.file.url, uploadedBy: res.metadata.userId };
     }),
 } satisfies FileRouter;

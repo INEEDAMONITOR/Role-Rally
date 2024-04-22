@@ -4,6 +4,14 @@ import { deleteRole, getRolesWithProfile } from "@/app/api/_services/role";
 import { handler } from "@/app/api/_middleware/handler";
 import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 
+/**
+ * Retrieves roles based on the user's cookies.
+ *
+ * @method
+ * @async
+ * @param req - The NextRequest object representing the incoming request.
+ * @returns A NextResponse object containing the roles in JSON format.
+ */
 const getRolesByCookies = async (req: NextRequest) => {
   try {
     console.log("getRolesByCookies request", req);
@@ -26,6 +34,14 @@ const getRolesByCookies = async (req: NextRequest) => {
 };
 export const GET = handler(validateTokenMiddleware, getRolesByCookies);
 
+/**
+ * Deletes a role by its role ID.
+ *
+ * @method
+ * @async
+ * @param request - The NextRequest object representing the incoming request.
+ * @returns A NextResponse object with a JSON response indicating the result of the operation.
+ */
 const deleteRoleByRoleId = async (request: NextRequest) => {
   const body = await request.json();
 

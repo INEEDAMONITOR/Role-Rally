@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> _services/user.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PUT">PUT</a></li><li><a href="global.html#createProfile">createProfile</a></li><li><a href="global.html#createRole">createRole</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#dbConnect">dbConnect</a></li><li><a href="global.html#deleteProfile">deleteProfile</a></li><li><a href="global.html#deleteRole">deleteRole</a></li><li><a href="global.html#deleteRoleByRoleId">deleteRoleByRoleId</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#generateFindOneQuery">generateFindOneQuery</a></li><li><a href="global.html#generateFindQuery">generateFindQuery</a></li><li><a href="global.html#getRoleByRoleId">getRoleByRoleId</a></li><li><a href="global.html#getRoleWithProfile">getRoleWithProfile</a></li><li><a href="global.html#getRolesByCookies">getRolesByCookies</a></li><li><a href="global.html#getRolesWithProfile">getRolesWithProfile</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserByCookies">getUserByCookies</a></li><li><a href="global.html#handler">handler</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#userAuthenticate">userAuthenticate</a></li><li><a href="global.html#userAuthenticateWithIdMiddleware">userAuthenticateWithIdMiddleware</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateProfileIdWithJWT">validateProfileIdWithJWT</a></li><li><a href="global.html#validateRoleIdWithJWT">validateRoleIdWithJWT</a></li><li><a href="global.html#validateTokenMiddleware">validateTokenMiddleware</a></li><li><a href="global.html#validateUser">validateUser</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>_services/user.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Types } from "mongoose";
+import UserModel, { IUser } from "@/app/api/_models/User";
+import bcrypt from "bcrypt";
+import { generateFindOneQuery } from "@/app/api/_services/utils";
+import { deleteRole } from "@/app/api/_services/role";
+
+interface CreateUserProp {
+  name: string;
+  email: string;
+  password: string;
+}
+interface UserProps extends Omit&lt;IUser, "_id" | "rolesId"> {
+  _id: string | Types.ObjectId;
+  rolesId: string[] | Types.ObjectId[];
+}
+
+/**
+ * Validates the user by checking if the provided email and password match the stored user credentials.
+ *
+ * @method
+ * @async
+ * @param email - The email of the user.
+ * @param password - The password of the user.
+ * @returns A boolean indicating whether the user is valid or not.
+ */
+export const validateUser = async (email: string, password: string) => {
+  try {
+    const user = await getUser({ email }, ["email", "password"]);
+
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return false;
+    }
+
+    return await user.toObject();
+  } catch (e) {
+    return null;
+  }
+};
+
+export type UserQueryProps = Partial&lt;UserProps> | string | Types.ObjectId;
+/**
+ * Retrieves a user based on the provided props and optional selector.
+ *
+ * @method
+ * @async
+ * @param props - The properties used to identify the user.
+ * @param selector - Optional selector to specify the fields to include or exclude in the user object.
+ * @returns A promise that resolves to the user object if found, or null if not found or an error occurred.
+ */
+export const getUser = generateFindOneQuery&lt;typeof UserModel, UserQueryProps>(
+  UserModel
+);
+
+/**
+ * Deletes a user by their ID.
+ *
+ * @method
+ * @async
+ * @param userId - The ID of the user to delete.
+ */
+export const deleteUser = async (userId: Types.ObjectId) => {
+  try {
+    const user = (await UserModel.findById(userId).exec()) as IUser;
+    if (user) {
+      for (const role of user.rolesId) {
+        deleteRole(role._id);
+      }
+      await UserModel.findByIdAndDelete(user._id);
+    }
+  } catch (error) {
+    // Handle the error, log it, or rethrow
+    console.error(error);
+    throw error; // or any other error handling mechanism
+  }
+};
+
+/**
+ * Creates a new user.
+ *
+ * @method
+ * @async
+ * @param user - The user object containing the user's name, email, and password.
+ * @returns A promise that resolves to the created user object.
+ */
+export const createUser = async (user: CreateUserProp) => {
+  try {
+    return await UserModel.create({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

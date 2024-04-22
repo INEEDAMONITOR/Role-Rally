@@ -5,6 +5,16 @@ import { profile } from "console";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
+/**
+ * Middleware function to validate the profile ID with JWT.
+ *
+ * @method
+ * @async
+ * @param {Request} req - The request object, expected to carry a JWT for authentication.
+ * @param {Response} _ - The response object. Not used in this middleware, hence the underscore.
+ * @param {NextFunction} next - The next function to call in the middleware chain.
+ * @returns - A JSON response indicating whether the profile ID is valid or not.
+ */
 export const validateProfileIdWithJWT: CustomMiddleware = async (
   req,
   _,
