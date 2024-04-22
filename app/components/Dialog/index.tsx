@@ -5,6 +5,7 @@ interface Props {
   header?: ReactNode;
   isVisible: boolean;
   dismissible?: boolean;
+  className?: string;
   onClickClose: () => void;
 }
 
@@ -22,10 +23,10 @@ export default function Dialog(props: Props) {
 
   return (
     <div
-      className={`${props.isVisible ? "visible" : "invisible"} overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm`}
+      className={`${props.isVisible ? "visible" : "invisible"} overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full backdrop-blur-sm py-10`}
       onClick={handleBackdropClick}
     >
-      <div className="relative p-4 w-full max-w-xl max-h-full border border-zinc-600 rounded-2xl bg-black shadow-lg overflow-y-auto">
+      <div className={`relative p-4 w-full max-h-full border border-zinc-600 rounded-2xl bg-black shadow-lg overflow-y-auto ${props.className}`}>
         <div className="relative rounded-lg shadow">
           <div className={`flex items-center justify-between ${props.header && "p-4 border-b rounded-t border-gray-600"} `}>
             {props.header && (

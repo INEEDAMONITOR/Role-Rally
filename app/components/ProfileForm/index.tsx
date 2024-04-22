@@ -2,15 +2,15 @@
 
 import { UserContext } from "@/app/contexts/UserContext";
 import { Button } from "flowbite-react";
-import { ReactNode, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ArrowRight } from "../Icon";
 import ImageUploader from "../ImageUploader";
-import { Profile, Role } from "@/app/types";
+import { Profile } from "@/app/types";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
-import { FormInput, FormSelect } from "@/app/components/Form/Input";
+import { FormInput, FormSelect } from "@/app/components/ProfileForm/Input";
 import { useRouter } from "next/navigation";
 
 type ProfileFormProps = {
@@ -30,12 +30,6 @@ type ProfileFormInputs = {
   website: string;
 }
 
-type ProfileControlProps = {
-  isVisible: boolean;
-  onClose: () => void;
-  roles: Role[];
-}
-
 const PRONOUNS = [
   { value: "", label: "Don't specify" },
   { value: "they/them", label: "they/them" },
@@ -43,7 +37,7 @@ const PRONOUNS = [
   { value: "he/him", label: "he/him" },
 ];
 
-export const ProfileForm = (props: ProfileFormProps) => {
+export default function ProfileForm(props: ProfileFormProps) {
   const { user } = useContext(UserContext);
   const [imgUrl, setImgUrl] = useState<string>();
   const [isSubmitLoading, setSubmitLoading] = useState(false);
@@ -56,7 +50,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
     values: props.defaultValues,
   });
   const router = useRouter();
-  
+
   const handleImgUploadComplete = (url: string) => {
     setImgUrl(url);
   };
@@ -76,7 +70,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
 
     try {
       setDeleting(true);
-      
+
       const res = await fetch(`/api/role/${props.defaultValues.ownerRoleId}`, {
         method: "DELETE",
         headers: {
@@ -101,9 +95,9 @@ export const ProfileForm = (props: ProfileFormProps) => {
     if (!user?._id) {
       throw new Error("User Id does not exists");
     }
-  
+
     setSubmitLoading(true);
-  
+
     try {
       if (props.defaultValues) {
         await fetch(`/api/profile/${props.defaultValues.ownerRoleId}`, {
@@ -197,7 +191,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
         label="Pronouns"
         register={register("pronouns")}
         options={PRONOUNS}
-      /> 
+      />
 
       <FormInput
         label="Email"
@@ -217,7 +211,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
       />
 
       <div className={`flex ${props.defaultValues ? "justify-between" : "justify-end"}`}>
-        {props.defaultValues && 
+        {props.defaultValues &&
           <div className="self-center">
             <div
               className="text-red-600 hover:underline cursor-pointer text-sm"
@@ -226,6 +220,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
               Delete this role
             </div>
             <Dialog
+              className="max-w-lg"
               header="Confirm Deletion"
               dismissible
               isVisible={isDeleteConfirmVisible}
@@ -274,53 +269,4 @@ export const ProfileForm = (props: ProfileFormProps) => {
       </div>
     </form>
   );
-};
-
-export const ProfileControl = (props: ProfileControlProps) => {
-  const HEADERS: ReactNode[] = [
-    "Choose a Profile",
-    "Change Visibility",
-  ];
-  const { roles, isVisible, onClose } = props;
-  const [step, setStep] = useState<number>(0);
-
-  const handleProfileClick = (profile: Profile) => {
-    setStep(1);
-  };
-
-  const handleDialogClose = () => {
-    setStep(0);
-    onClose();
-  };
-
-  return (
-    <Dialog
-      header={HEADERS[step]}
-      isVisible={isVisible}
-      onClickClose={handleDialogClose}
-    >
-      <div>
-        {step === 0 &&
-          <div className="flex flex-col space-y-4">
-            {roles.map(r => (
-              <div
-                key={r._id}
-                className="cursor-pointer hover:bg-zinc-900 p-4 border border-zinc-600 rounded-xl"
-                onClick={() => handleProfileClick(r.profile)}
-              >
-                <ProfileCard data={r.profile} />
-              </div>
-            )
-            )}
-          </div>
-        }
-
-        {step === 1 &&
-          <div>
-            {/*TODO*/}
-          </div>
-        }
-      </div>
-    </Dialog>
-  );
-};
+}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AddUser, Cog } from "@/app/components/Icon";
 import { ReactNode } from "react";
+import Divider from "@/app/components/Divider";
 
 export type UserLink = {
   id: string;
@@ -49,7 +50,7 @@ export default function UserMenu(props: Props) {
           onClick={() => props.onMenuClick?.(l)}
         >
           {l.type === "system" && links.length > 1 &&
-            <div className="border-t border-zinc-700 my-2" />
+            <Divider />
           }
           <div
             className={`cursor-pointer hover:bg-zinc-700 px-4 py-3 rounded-xl ${l?.icon ? "flex items-center space-x-3" : ""}`}

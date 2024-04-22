@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Back, Bars } from "@/app/components/Icon";
 import { useRouter, useSearchParams } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
-import { ListGroup, Tooltip } from "flowbite-react";
+import { Tooltip } from "flowbite-react";
 import UserMenu, { USER_LINKS } from "@/app/components/UserMenu";
 
 export default function SettingsLayout({

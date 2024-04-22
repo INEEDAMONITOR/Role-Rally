@@ -8,8 +8,9 @@ import { Avatar, Tooltip } from "flowbite-react";
 import { Bars } from "@/app/components/Icon";
 import ProfileCard from "@/app/components/ProfileCard";
 import Dialog from "@/app/components/Dialog";
-import { ProfileControl, ProfileForm } from "@/app/components/Form";
+import ProfileForm from "@/app/components/ProfileForm";
 import UserMenu, { USER_LINKS, UserLink } from "@/app/components/UserMenu";
+import ProfileControl from "@/app/components/ProfileControl";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
@@ -143,6 +144,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
         </div>
         <div className="w-4 h-20" />
         <Dialog
+          className="max-w-xl"
           header="Edit Proifle"
           isVisible={isEditProfileVisible}
           onClickClose={() => handleEditProfileClose(false)}
