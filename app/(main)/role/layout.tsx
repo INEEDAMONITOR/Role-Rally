@@ -5,6 +5,7 @@ import { Back, Bars } from "@/app/components/Icon";
 import { useRouter, useSearchParams } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import { ListGroup, Tooltip } from "flowbite-react";
+import UserMenu, { USER_LINKS } from "@/app/components/UserMenu";
 
 export default function SettingsLayout({
   children,
@@ -24,13 +25,9 @@ export default function SettingsLayout({
         {searchParams.get("new") ?
           <div className="flex items-center">
             <Tooltip
+              className="bg-zinc-800 p-2"
               content={(
-                // TODO: ListGroup theme adjust
-                <ListGroup className="w-48">
-                  <ListGroup.Item href="/login?out=1">
-                    Log Out
-                  </ListGroup.Item>
-                </ListGroup>
+                <UserMenu links={USER_LINKS.filter(l => l.id === "log-out")} />
               )}
               trigger="click"
               arrow={false}

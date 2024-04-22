@@ -2,12 +2,12 @@
 
 import { UserContext } from "@/app/contexts/UserContext";
 import { Button } from "flowbite-react";
-import { useContext, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ArrowRight } from "../Icon";
 import ImageUploader from "../ImageUploader";
-import { Profile } from "@/app/types";
+import { Profile, Role } from "@/app/types";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
 import { FormInput, FormSelect } from "@/app/components/Form/Input";
@@ -28,6 +28,12 @@ type ProfileFormInputs = {
   about: string;
   pronouns: string;
   website: string;
+}
+
+type ProfileControlProps = {
+  isVisible: boolean;
+  onClose: () => void;
+  roles: Role[];
 }
 
 const PRONOUNS = [
@@ -267,5 +273,54 @@ export const ProfileForm = (props: ProfileFormProps) => {
         </Button>
       </div>
     </form>
+  );
+};
+
+export const ProfileControl = (props: ProfileControlProps) => {
+  const HEADERS: ReactNode[] = [
+    "Choose a Profile",
+    "Change Visibility",
+  ];
+  const { roles, isVisible, onClose } = props;
+  const [step, setStep] = useState<number>(0);
+
+  const handleProfileClick = (profile: Profile) => {
+    setStep(1);
+  };
+
+  const handleDialogClose = () => {
+    setStep(0);
+    onClose();
+  };
+
+  return (
+    <Dialog
+      header={HEADERS[step]}
+      isVisible={isVisible}
+      onClickClose={handleDialogClose}
+    >
+      <div>
+        {step === 0 &&
+          <div className="flex flex-col space-y-4">
+            {roles.map(r => (
+              <div
+                key={r._id}
+                className="cursor-pointer hover:bg-zinc-900 p-4 border border-zinc-600 rounded-xl"
+                onClick={() => handleProfileClick(r.profile)}
+              >
+                <ProfileCard data={r.profile} />
+              </div>
+            )
+            )}
+          </div>
+        }
+
+        {step === 1 &&
+          <div>
+            {/*TODO*/}
+          </div>
+        }
+      </div>
+    </Dialog>
   );
 };

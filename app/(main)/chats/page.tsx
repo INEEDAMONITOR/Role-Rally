@@ -68,7 +68,7 @@ export default function Chats() {
         }
       </div>
       {isDrawerVisible &&
-        <div className="basis-1/5">
+        <div className="basis-1/5 overflow-y-auto h-screen">
           <ProfileDrawer data={currentProfile} />
         </div>
       }

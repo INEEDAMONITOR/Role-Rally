@@ -4,11 +4,12 @@ import { UserContext } from "@/app/contexts/UserContext";
 import { Profile, Role } from "@/app/types";
 import { getByCookies } from "@/app/utils/https";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Avatar, ListGroup, Tooltip } from "flowbite-react";
+import { Avatar, Tooltip } from "flowbite-react";
 import { Bars } from "@/app/components/Icon";
 import ProfileCard from "@/app/components/ProfileCard";
 import Dialog from "@/app/components/Dialog";
-import { ProfileForm } from "@/app/components/Form";
+import { ProfileControl, ProfileForm } from "@/app/components/Form";
+import UserMenu, { USER_LINKS, UserLink } from "@/app/components/UserMenu";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
@@ -24,6 +25,7 @@ export default function RoleSelector(props: RoleSwitcherProps) {
   const [roles, setRoles] = useState<Role[]>([]);
   const [currentEditProfile, setCurrentEditProfile] = useState<Profile>();
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
+  const [isManageProfileVisible, setManageProfileVisible] = useState(false);
 
   const handleFetchRoles = useCallback(async () => {
     try {
@@ -70,6 +72,16 @@ export default function RoleSelector(props: RoleSwitcherProps) {
     handleFetchRoles();
   };
 
+  const handleManageProfileClose = () => {
+    setManageProfileVisible(false);
+  };
+
+  const handleUserLinkClick = (link: UserLink) => {
+    if (link.id === "profile-settings") {
+      setManageProfileVisible(true);
+    }
+  };
+
   useEffect(() => {
     handleFetchRoles();
   }, [handleFetchRoles]);
@@ -114,16 +126,12 @@ export default function RoleSelector(props: RoleSwitcherProps) {
         </div>
         <div className="p-2 fixed bg-black bottom-0">
           <Tooltip
+            className="bg-zinc-800 p-2"
             content={(
-              // TODO: ListGroup theme adjust
-              <ListGroup className="w-48">
-                <ListGroup.Item href="/role/create">
-                  Add New Role
-                </ListGroup.Item>
-                <ListGroup.Item href="/login?out=1">
-                  Log Out
-                </ListGroup.Item>
-              </ListGroup>
+              <UserMenu
+                links={USER_LINKS}
+                onMenuClick={handleUserLinkClick}
+              />
             )}
             trigger="click"
             arrow={false}
@@ -145,6 +153,11 @@ export default function RoleSelector(props: RoleSwitcherProps) {
             onDelete={handleDeleteProfile}
           />
         </Dialog>
+        <ProfileControl
+          roles={roles}
+          isVisible={isManageProfileVisible}
+          onClose={handleManageProfileClose}
+        />
       </div>
     </div>
   );
