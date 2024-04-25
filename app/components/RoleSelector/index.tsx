@@ -11,6 +11,7 @@ import Dialog from "@/app/components/Dialog";
 import ProfileForm from "@/app/components/ProfileForm";
 import UserMenu, { USER_LINKS, UserLink } from "@/app/components/UserMenu";
 import ProfileControl from "@/app/components/ProfileControl";
+import Image from "next/image";
 
 interface RoleSwitcherProps {
   selectedRoleId?: string,
@@ -95,7 +96,13 @@ export default function RoleSelector(props: RoleSwitcherProps) {
     <div className="flex flex-col h-full border-e border-zinc-800 px-1">
       <div className="flex flex-col items-center">
         <div className="px-3 py-6 mx-auto fixed bg-black z-20">
-          <Avatar placeholderInitials="RR" />
+          <Image
+            className="rounded-full"
+            width={60}
+            height={60}
+            src="/logo.png"
+            alt="Role Rally"
+          />
         </div>
         <div className="w-4 h-24" />
       </div>

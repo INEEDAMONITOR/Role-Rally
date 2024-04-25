@@ -58,18 +58,18 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-10 py-12">
+    <div className="flex min-h-full flex-col justify-center p-12">
       <div>
         <Image
           className="rounded-full"
-          width={200}
-          height={0}
-          src="/tailwindcss-logotype-white.svg"
+          width={64}
+          height={64}
+          src="/logo.png"
           alt="Role Rally"
         />
       </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-32 text-center text-4xl font-bold leading-9 tracking-tight text-gray-200">
+        <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight text-gray-200">
           Log in
         </h2>
       </div>

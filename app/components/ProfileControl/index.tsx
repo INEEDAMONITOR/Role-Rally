@@ -123,7 +123,7 @@ export default function ProfileControl(props: ProfileControlProps) {
 
   return (
     <Dialog
-      className="max-w-2xl"
+      className={step === 1 ? "max-w-2xl" : "max-w-xl"}
       header={HEADERS[step]}
       isVisible={isVisible}
       onClickClose={handleDialogClose}
