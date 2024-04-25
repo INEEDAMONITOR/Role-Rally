@@ -50,6 +50,7 @@ export const createRole = async (
   await dbConnect();
 
   const profile: IProfile = await ProfileModel.create(profilePayload);
+  // TODO: CREATE PROFILE VISIBILITY
 
   const role: IRole = await RoleModel.create<IRole>({
     profileId: profile._id,
@@ -92,16 +93,24 @@ export const getRole = generateFindOneQuery<typeof RoleModel, QueryProps>(
  * @async
  * @param props - The query props for retrieving the role.
  * @param selector - The selector for retrieving the role.
+ * @param profileSelector - Profile selector for retrieving the profile.
  * @returns A Promise that resolves to the role object with its associated profile, or an empty object if an error occurs.
  */
 export const getRoleWithProfile = async (
   props: QueryProps,
-  selector?: Selector
+  selector?: Selector,
+  profileSelector?: Selector,
 ) => {
   let role = await getRole(props, selector);
   try {
     if (role) {
-      const profile = await getProfile(role.profileId);
+
+      const profile = await getProfile(
+        {
+          _id: role.profileId,
+        },
+        profileSelector,
+      );
       role = { ...role.toObject(), profile };
     }
     return role;
@@ -126,11 +135,12 @@ export const getRoles = generateFindQuery<typeof RoleModel, QueryProps>(
  */
 export const getRolesWithProfile = async (
   props: QueryProps,
-  selector?: Selector
+  selector?: Selector,
 ) => {
   let roles = (await getRoles(props, selector)) as any[];
   try {
     for (let i = 0; i < roles.length; i++) {
+      // TODO: GET VISIBILITY SELECTORS
       const profile = await getProfile({ _id: roles[i].profileId });
       roles[i] = { ...roles[i].toObject(), profile };
     }

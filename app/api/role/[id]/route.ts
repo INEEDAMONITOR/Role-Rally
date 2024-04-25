@@ -17,12 +17,25 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns A NextResponse object with the role data or an error message.
  */
 const getRoleByRoleId = async (
-  _: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
+  const searchParams = req.nextUrl.searchParams;
+  // visible===1: show visible profile
+  // visible===0: show complete profile
+  const visible = searchParams.get("visible");
   try {
-    let role = await getRoleWithProfile({ _id: id });
+    let role;
+
+    if (visible && visible === "1") {
+      // TODO: GET VISIBILITY SELECTOR
+      let profileSelector = {};
+
+      role = await getRoleWithProfile({ _id: id }, {}, profileSelector);
+    } else {
+      role = await getRoleWithProfile({ _id: id });
+    }
 
     role = {
       _id: role._id,

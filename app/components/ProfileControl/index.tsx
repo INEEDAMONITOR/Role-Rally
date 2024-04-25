@@ -103,6 +103,8 @@ export default function ProfileControl(props: ProfileControlProps) {
   const handleProfileClick = (e: React.MouseEvent<HTMLDivElement>, profile: Profile) => {
     e.preventDefault();
     e.stopPropagation();
+    // TODO: FETCH VISIBILITY
+
     setCurrentProfile(profile);
     setStep(1);
   };

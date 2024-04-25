@@ -39,7 +39,7 @@ export default function Chats() {
     }
 
     try {
-      const res = await fetch(`/api/role/${targetRoleId}`);
+      const res = await fetch(`/api/role/${targetRoleId}?visible=1`);
       const data = await res.json();
 
       setCurrentProfile(data?.data?.profile);
