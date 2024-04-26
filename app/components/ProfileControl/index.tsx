@@ -4,10 +4,9 @@ import { Profile, Role } from "@/app/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
-import { Badge } from "flowbite-react";
+import { Badge, Button } from "flowbite-react";
 import Divider from "@/app/components/Divider";
 import ProfileDrawer from "@/app/components/ProfileDrawer";
-import { ProfileVisibility } from "@/app/api/_models/ProfileVisibility";
 
 type ProfileControlProps = {
   isVisible: boolean;
@@ -103,19 +102,24 @@ export default function ProfileControl(props: ProfileControlProps) {
   const handleProfileClick = async (e: React.MouseEvent<HTMLDivElement>, profile: Profile) => {
     e.preventDefault();
     e.stopPropagation();
-    const res = await fetch(`/api/profile/visible/${profile._id}`);
+    const res = await fetch(`/api/profile/visibility/${profile._id}`);
     const data = await res.json();
     const profileSelector = data.data;
-    let formattedFormFields: ProfileControlForm = {};
-
-    Object.keys(profileSelector).map(key => {
-      if (key !== "profileId") {
-        formattedFormFields[key] = !!profileSelector[key];
-      }
+    
+    setDefaultVisibilities({
+      lastName: true,
+      email: true,
+      about: true,
+      pronouns: true,
+      website: true,
+      ...profileSelector,
     });
 
-    setDefaultVisibilities(formattedFormFields);
-    setCurrentProfile(profile);
+    const profileRes = await fetch(`/api/role/${profile.ownerRoleId}`);
+    const profileData = await profileRes.json();
+    const completeProfile = profileData?.data?.profile;
+    
+    setCurrentProfile(completeProfile);
     setStep(1);
   };
 
@@ -126,13 +130,19 @@ export default function ProfileControl(props: ProfileControlProps) {
   };
 
   const onSubmit: SubmitHandler<ProfileControlForm> = async (data) => {
-    console.log(data);
-    // UPDATE VISIBILITY
-  };
+    await fetch(`/api/profile/visibility/${currentProfile?._id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        lastName: data.lastName ? "1" : "0",
+        email: data.email ? "1" : "0",
+        about: data.about ? "1" : "0",
+        pronouns: data.pronouns ? "1" : "0",
+        website: data.website ? "1" : "0",
+      }),
+    });
 
-  useEffect(() => {
-    console.log(watchAllFields);
-  }, [watchAllFields]);
+    location.href = "/chats";
+  };
 
   return (
     <Dialog
@@ -176,6 +186,14 @@ export default function ProfileControl(props: ProfileControlProps) {
                     </label>
                   </div>
                 ))}
+                <Button
+                  className="mt-4"
+                  type="submit"
+                  size="sm"
+                  color="purple"
+                >
+                  Save
+                </Button>
               </form>
 
               <div className="border border-zinc-600 rounded-xl p-4 flex-grow">
