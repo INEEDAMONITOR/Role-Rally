@@ -2,6 +2,7 @@ import { handler } from "@/app/api/_middleware/handler";
 import { validateRoleIdWithJWT } from "@/app/api/_middleware/role";
 import { validateTokenMiddleware } from "@/app/api/_middleware/user";
 import { deleteRole, getRoleWithProfile } from "@/app/api/_services/role";
+import { getProfile, getProfileVisibility } from "@/app/api/_services/profile";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -17,21 +18,70 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns A NextResponse object with the role data or an error message.
  */
 const getRoleByRoleId = async (
-  _: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
-  try {
-    let role = await getRoleWithProfile({ _id: id });
 
-    role = {
-      _id: role._id,
-      profile: role.profile,
-    };
+  if (!id) {
     return NextResponse.json({
-      message: "Role fetched successfully",
-      data: role,
+      message: "Role Id cannot be undefined"
     });
+  }
+
+  const idArr = id.split(",");
+
+  const searchParams = req.nextUrl.searchParams;
+  // visible===1: show visible profile
+  // visible===0: show complete profile
+  const visible = searchParams.get("visible");
+
+  try {
+    if (idArr.length === 1) {    
+      let role;
+  
+      if (visible && visible === "1") {
+        const profile = await getProfile({ ownerRoleId: id as any });
+        const profileSelector = await getProfileVisibility({ profileId: profile._id });
+        
+        role = await getRoleWithProfile({ _id: id }, {}, profileSelector);
+      } else {
+        role = await getRoleWithProfile({ _id: id });
+      }
+  
+      role = {
+        _id: role._id,
+        profile: role.profile,
+      };
+      return NextResponse.json({
+        message: "Role fetched successfully",
+        data: role,
+      });
+    } else if (idArr.length > 1) {
+      let roles = [];
+
+      if (visible && visible === "1") {
+        roles = idArr.map(async (i) => {
+          const profile = await getProfile({ ownerRoleId: id as any });
+          const profileSelector = await getProfileVisibility({ profileId: profile._id });
+          
+          return await getRoleWithProfile({ _id: id }, {}, profileSelector);
+        });
+      } else { 
+        roles = idArr.map(async (i) => {
+          return await getRoleWithProfile({ _id: id });
+        });
+      }
+
+      return NextResponse.json({
+        message: "Role fetched successfully",
+        data: roles,
+      });
+    } else {
+      return NextResponse.json({
+        message: "Role Id illegal",
+      });
+    }
   } catch (e) {
     console.error(e);
     return NextResponse.json(

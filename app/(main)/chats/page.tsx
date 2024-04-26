@@ -39,7 +39,7 @@ export default function Chats() {
     }
 
     try {
-      const res = await fetch(`/api/role/${targetRoleId}`);
+      const res = await fetch(`/api/role/${targetRoleId}?visible=1`);
       const data = await res.json();
 
       setCurrentProfile(data?.data?.profile);
@@ -68,7 +68,7 @@ export default function Chats() {
         }
       </div>
       {isDrawerVisible &&
-        <div className="basis-1/5">
+        <div className="basis-1/5 overflow-y-auto h-screen">
           <ProfileDrawer data={currentProfile} />
         </div>
       }

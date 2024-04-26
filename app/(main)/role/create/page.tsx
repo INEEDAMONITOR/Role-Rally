@@ -1,6 +1,6 @@
 "use client";
 
-import { ProfileForm } from "@/app/components/Form";
+import ProfileForm from "@/app/components/ProfileForm";
 import { useRouter } from "next/navigation";
 
 export default function CreateRole() {

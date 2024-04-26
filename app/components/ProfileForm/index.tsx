@@ -2,7 +2,7 @@
 
 import { UserContext } from "@/app/contexts/UserContext";
 import { Button } from "flowbite-react";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ArrowRight } from "../Icon";
@@ -10,7 +10,7 @@ import ImageUploader from "../ImageUploader";
 import { Profile } from "@/app/types";
 import Dialog from "@/app/components/Dialog";
 import ProfileCard from "@/app/components/ProfileCard";
-import { FormInput, FormSelect } from "@/app/components/Form/Input";
+import { FormInput, FormSelect } from "@/app/components/ProfileForm/Input";
 import { useRouter } from "next/navigation";
 
 type ProfileFormProps = {
@@ -37,7 +37,7 @@ const PRONOUNS = [
   { value: "he/him", label: "he/him" },
 ];
 
-export const ProfileForm = (props: ProfileFormProps) => {
+export default function ProfileForm(props: ProfileFormProps) {
   const { user } = useContext(UserContext);
   const [imgUrl, setImgUrl] = useState<string>();
   const [isSubmitLoading, setSubmitLoading] = useState(false);
@@ -50,7 +50,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
     values: props.defaultValues,
   });
   const router = useRouter();
-  
+
   const handleImgUploadComplete = (url: string) => {
     setImgUrl(url);
   };
@@ -70,7 +70,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
 
     try {
       setDeleting(true);
-      
+
       const res = await fetch(`/api/role/${props.defaultValues.ownerRoleId}`, {
         method: "DELETE",
         headers: {
@@ -95,9 +95,9 @@ export const ProfileForm = (props: ProfileFormProps) => {
     if (!user?._id) {
       throw new Error("User Id does not exists");
     }
-  
+
     setSubmitLoading(true);
-  
+
     try {
       if (props.defaultValues) {
         await fetch(`/api/profile/${props.defaultValues.ownerRoleId}`, {
@@ -191,7 +191,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
         label="Pronouns"
         register={register("pronouns")}
         options={PRONOUNS}
-      /> 
+      />
 
       <FormInput
         label="Email"
@@ -211,7 +211,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
       />
 
       <div className={`flex ${props.defaultValues ? "justify-between" : "justify-end"}`}>
-        {props.defaultValues && 
+        {props.defaultValues &&
           <div className="self-center">
             <div
               className="text-red-600 hover:underline cursor-pointer text-sm"
@@ -220,6 +220,7 @@ export const ProfileForm = (props: ProfileFormProps) => {
               Delete this role
             </div>
             <Dialog
+              className="max-w-lg"
               header="Confirm Deletion"
               dismissible
               isVisible={isDeleteConfirmVisible}
@@ -268,4 +269,4 @@ export const ProfileForm = (props: ProfileFormProps) => {
       </div>
     </form>
   );
-};
+}

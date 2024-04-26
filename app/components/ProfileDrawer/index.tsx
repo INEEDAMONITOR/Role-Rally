@@ -45,7 +45,7 @@ export default function ProfileDrawer(props: Props) {
         />
       </div>
       <div className="self-center text-gray-200 mb-1">
-        {`${data.firstName} ${data.lastName}`}
+        {`${data.firstName} ${data.lastName ?? ""}`}
       </div>
       {data.pronouns &&
         <div className="self-center text-sm text-gray-400 mb-1">
@@ -56,12 +56,16 @@ export default function ProfileDrawer(props: Props) {
         {`@${data.username}`}
       </div>
       <div className="mt-10">
-        <LabelText label="Bio">
-          {data.about ? `${data.about}` : "-"}
-        </LabelText>
-        <LabelText label="Email">
-          {`${data.email}`}
-        </LabelText>
+        {data.about &&
+          <LabelText label="Bio">
+            {data.about}
+          </LabelText>
+        }
+        {data.email &&
+          <LabelText label="Email">
+            {data.email}
+          </LabelText>
+        }
         {data.website &&
           <LabelText label="Website">
             <div className="text-blue-500 text-sm pt-1.5">

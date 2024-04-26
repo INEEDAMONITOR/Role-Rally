@@ -6,7 +6,7 @@ import {
   generateFindOneQuery,
   generateFindQuery,
 } from "@/app/api/_services/utils";
-import { deleteProfile, getProfile } from "@/app/api/_services/profile";
+import { deleteProfile, getProfile, getProfileVisibility, createProfileVisibilty } from "@/app/api/_services/profile";
 import { dbConnect } from "@/app/api/_utils";
 import UserModel from "@/app/api/_models/User";
 import { Profile } from "@/app/types";
@@ -50,7 +50,7 @@ export const createRole = async (
   await dbConnect();
 
   const profile: IProfile = await ProfileModel.create(profilePayload);
-
+  await createProfileVisibilty(profile._id);
   const role: IRole = await RoleModel.create<IRole>({
     profileId: profile._id,
     ownerId: userId,
@@ -92,16 +92,23 @@ export const getRole = generateFindOneQuery<typeof RoleModel, QueryProps>(
  * @async
  * @param props - The query props for retrieving the role.
  * @param selector - The selector for retrieving the role.
+ * @param profileSelector - Profile selector for retrieving the profile.
  * @returns A Promise that resolves to the role object with its associated profile, or an empty object if an error occurs.
  */
 export const getRoleWithProfile = async (
   props: QueryProps,
-  selector?: Selector
+  selector?: Selector,
+  profileSelector?: Selector,
 ) => {
   let role = await getRole(props, selector);
   try {
     if (role) {
-      const profile = await getProfile(role.profileId);
+      const profile = await getProfile(
+        {
+          _id: role.profileId,
+        },
+        profileSelector,
+      );
       role = { ...role.toObject(), profile };
     }
     return role;
@@ -126,12 +133,14 @@ export const getRoles = generateFindQuery<typeof RoleModel, QueryProps>(
  */
 export const getRolesWithProfile = async (
   props: QueryProps,
-  selector?: Selector
+  selector?: Selector,
 ) => {
   let roles = (await getRoles(props, selector)) as any[];
   try {
     for (let i = 0; i < roles.length; i++) {
-      const profile = await getProfile({ _id: roles[i].profileId });
+      const profileSelector = await getProfileVisibility({ profileId: roles[i].profileId });      
+      const profile = await getProfile({ _id: roles[i].profileId }, profileSelector);
+
       roles[i] = { ...roles[i].toObject(), profile };
     }
     return roles;
