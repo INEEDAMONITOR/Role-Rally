@@ -7,6 +7,7 @@ import ProfileCard from "@/app/components/ProfileCard";
 import { Badge } from "flowbite-react";
 import Divider from "@/app/components/Divider";
 import ProfileDrawer from "@/app/components/ProfileDrawer";
+import { ProfileVisibility } from "@/app/api/_models/ProfileVisibility";
 
 type ProfileControlProps = {
   isVisible: boolean;
@@ -36,10 +37,6 @@ export default function ProfileControl(props: ProfileControlProps) {
   ];
   const FIELDS = [
     {
-      label: "Profile picture",
-      name: "avatar",
-    },
-    {
       label: "Last Name",
       name: "lastName",
     },
@@ -63,11 +60,14 @@ export default function ProfileControl(props: ProfileControlProps) {
   const { roles, isVisible, onClose } = props;
   const [step, setStep] = useState<number>(0);
   const [currentProfile, setCurrentProfile] = useState<Profile>();
+  const [defaultVisibilities, setDefaultVisibilities] = useState<ProfileControlForm>();
   const {
     register,
     handleSubmit,
     watch,
-  } = useForm<ProfileControlForm>();
+  } = useForm<ProfileControlForm>({
+    values: defaultVisibilities,
+  });
   const watchAllFields = watch();
   const previewProfile = useMemo(() => {
     if (!currentProfile) {
@@ -100,11 +100,21 @@ export default function ProfileControl(props: ProfileControlProps) {
     return Object.fromEntries([...requiredPairs, ...newPreviewPairs]);
   }, [watchAllFields]);
 
-  const handleProfileClick = (e: React.MouseEvent<HTMLDivElement>, profile: Profile) => {
+  const handleProfileClick = async (e: React.MouseEvent<HTMLDivElement>, profile: Profile) => {
     e.preventDefault();
     e.stopPropagation();
-    // TODO: FETCH VISIBILITY
+    const res = await fetch(`/api/profile/visible/${profile._id}`);
+    const data = await res.json();
+    const profileSelector = data.data;
+    let formattedFormFields: ProfileControlForm = {};
 
+    Object.keys(profileSelector).map(key => {
+      if (key !== "profileId") {
+        formattedFormFields[key] = !!profileSelector[key];
+      }
+    });
+
+    setDefaultVisibilities(formattedFormFields);
     setCurrentProfile(profile);
     setStep(1);
   };
@@ -117,6 +127,7 @@ export default function ProfileControl(props: ProfileControlProps) {
 
   const onSubmit: SubmitHandler<ProfileControlForm> = async (data) => {
     console.log(data);
+    // UPDATE VISIBILITY
   };
 
   useEffect(() => {

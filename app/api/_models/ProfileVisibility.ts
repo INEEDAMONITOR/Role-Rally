@@ -1,8 +1,16 @@
 import mongoose from "mongoose";
 
-export const ProfileVisibilitySchema = new mongoose.Schema({
+export type ProfileVisibility = {
+  profileId: string;
+  lastName: string;
+  email: string;
+  about: string;
+  pronouns: string;
+  website: string;
+}
+
+export const ProfileVisibilitySchema = new mongoose.Schema<ProfileVisibility>({
   profileId: { type: String, required: true },
-  avatar: { type: String, required: true },
   lastName:{ type: String, required: true },
   email:{ type: String, required: true },
   about:{ type: String, required: true },
@@ -11,4 +19,4 @@ export const ProfileVisibilitySchema = new mongoose.Schema({
 });
 
 export default mongoose.models.ProfileVisibility ||
-mongoose.model("ProfileVisibility", ProfileVisibilitySchema);
+mongoose.model<ProfileVisibility>("ProfileVisibility", ProfileVisibilitySchema);

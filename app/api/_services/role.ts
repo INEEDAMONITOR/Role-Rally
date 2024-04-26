@@ -6,7 +6,7 @@ import {
   generateFindOneQuery,
   generateFindQuery,
 } from "@/app/api/_services/utils";
-import { deleteProfile, getProfile } from "@/app/api/_services/profile";
+import { deleteProfile, getProfile, getProfileVisibility, createProfileVisibilty } from "@/app/api/_services/profile";
 import { dbConnect } from "@/app/api/_utils";
 import UserModel from "@/app/api/_models/User";
 import { Profile } from "@/app/types";
@@ -50,8 +50,7 @@ export const createRole = async (
   await dbConnect();
 
   const profile: IProfile = await ProfileModel.create(profilePayload);
-  // TODO: CREATE PROFILE VISIBILITY
-
+  await createProfileVisibilty(profile._id);
   const role: IRole = await RoleModel.create<IRole>({
     profileId: profile._id,
     ownerId: userId,
@@ -104,7 +103,6 @@ export const getRoleWithProfile = async (
   let role = await getRole(props, selector);
   try {
     if (role) {
-
       const profile = await getProfile(
         {
           _id: role.profileId,
@@ -140,8 +138,9 @@ export const getRolesWithProfile = async (
   let roles = (await getRoles(props, selector)) as any[];
   try {
     for (let i = 0; i < roles.length; i++) {
-      // TODO: GET VISIBILITY SELECTORS
-      const profile = await getProfile({ _id: roles[i].profileId });
+      const profileSelector = await getProfileVisibility({ profileId: roles[i].profileId });      
+      const profile = await getProfile({ _id: roles[i].profileId }, profileSelector);
+
       roles[i] = { ...roles[i].toObject(), profile };
     }
     return roles;
